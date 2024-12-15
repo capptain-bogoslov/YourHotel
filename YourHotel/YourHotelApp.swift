@@ -11,7 +11,7 @@ import SwiftUI
 struct YourHotelApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreen()
         }
     }
 }
