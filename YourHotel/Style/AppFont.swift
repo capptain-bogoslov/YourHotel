@@ -29,7 +29,7 @@ extension Font {
     }
     
     //return Font for each case for .system font REPLACE with custom selected font
-    static func font(style: AppFont) -> Font {
+    static func applyStyle(_ style: AppFont) -> Font {
         switch style {
             
         case .displayLarge:
@@ -65,6 +65,23 @@ extension Font {
         }
         
     }
+}
+
+
+//MARK: - View Modifier and View extension to apply custom Font
+struct TextStyleModifier: ViewModifier {
+    var font: Font
+    var lineSpacing: CGFloat
     
-    
+    func body(content: Content) -> some View {
+        content
+            .font(font)
+            .lineSpacing(lineSpacing)
+    }
+}
+
+extension View {
+    func applyFont(font: Font) -> some View {
+        self.modifier(TextStyleModifier(font: font, lineSpacing: 2))
+        }
 }
