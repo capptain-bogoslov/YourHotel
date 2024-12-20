@@ -12,7 +12,7 @@ extension Color {
     static let primaryColor = Color("PrimaryColor")
     static let secondaryColor = Color("SecondaryColor")
     static let tertiaryColor = Color("TertiaryColor")
-    static let accentPrimaryColor = Color("AccentPrimaryColor")
-    static let accentSecondaryColor = Color("AccentSecondaryColor")
-    static let emphasisColor = Color("EmphasisColor")
+    static let accentPrimaryColor = Color("Surface")
+    static let accentSecondaryColor = Color("SurfaceVariant")
+    static let emphasisColor = Color("SurfaceBright")
 }
