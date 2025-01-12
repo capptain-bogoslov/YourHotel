@@ -20,7 +20,6 @@ struct HomeView: View {
             Group {
 
                 ZStack {
-                    Color.primaryColor.ignoresSafeArea()
                     HomeContent()
                     
                 }
@@ -43,7 +42,6 @@ struct HomeView: View {
                 }
                 
                 ZStack {
-                    Color.secondary.ignoresSafeArea()
                     HomeContent()
                     
                 }
@@ -67,7 +65,6 @@ struct HomeView: View {
                 
                 
                 ZStack {
-                    Color.red.ignoresSafeArea()
                     HomeContent()
                 }
 //                .onTapGesture {
@@ -88,7 +85,6 @@ struct HomeView: View {
                 }
                 
                 ZStack {
-                    Color.yellow.ignoresSafeArea()
                     HomeContent()
                 }
 //                .onTapGesture {
@@ -108,7 +104,6 @@ struct HomeView: View {
                 }
                 
                 ZStack {
-                    Color.tertiaryColor.ignoresSafeArea()
                     HomeContent()
                 }
 //                .onTapGesture {
@@ -128,10 +123,10 @@ struct HomeView: View {
                 }
                 
             }
-            .toolbarBackground(Color.primaryColor, for: .tabBar)
+//            .toolbarBackground(Color.secondaryColor, for: .tabBar)
             .toolbarBackground(.visible, for: .tabBar)
         }
-        .tint(.black)
+        .tint(Color.primaryColor)
     }
     
     //swipe gesture
