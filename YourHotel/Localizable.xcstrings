@@ -51,6 +51,41 @@
         }
       }
     },
+    "profile_room_registration" : {
+      "comment" : "Headline",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room Registration"
+          }
+        }
+      }
+    },
+    "profile_scan_description_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan the QR code in your room to register to our app"
+          }
+        }
+      }
+    },
+    "profile_sign_up_label" : {
+      "comment" : "description text for sign up tab",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in and access hotel services"
+          }
+        }
+      }
+    },
     "services" : {
       "extractionState" : "manual",
       "localizations" : {

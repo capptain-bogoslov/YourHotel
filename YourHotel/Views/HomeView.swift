@@ -104,7 +104,7 @@ struct HomeView: View {
                 }
                 
                 ZStack {
-                    HomeContent()
+                    ProfileView()
                 }
 //                .onTapGesture {
 //                    if self.isDrawerOpen {
