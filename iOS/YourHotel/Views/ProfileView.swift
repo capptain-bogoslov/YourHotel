@@ -48,7 +48,6 @@ struct ProfileView: View {
                 3)
                 .offset(x: selectedTab == 0 ? -UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width / 4)
                 .animation(.easeInOut(duration: 0.5), value: selectedTab)
-            
 //            Spacer()
             
             if selectedTab == 0 {
@@ -70,8 +69,7 @@ struct ProfileView: View {
                             .foregroundStyle(.white, Color.tertiaryColor)
                             .padding(.trailing, 10)
                     }
-//                    Spacer()
-//                        .frame(maxHeight: 10)
+
                     Text("profile_scan_description_label")
                         .applyFont(font: Font.applyStyle(.bodyLarge))
                         .multilineTextAlignment(.center)
