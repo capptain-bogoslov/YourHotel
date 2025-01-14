@@ -41,7 +41,13 @@ struct ProfileView: View {
             }
             .padding(.horizontal, 40)
             .clipShape(RoundedRectangle(cornerRadius: 10))
-        
+            
+            Rectangle()
+                .fill(Color.secondaryColor)
+                .frame(width: UIScreen.main.bounds.width / 2, height:
+                3)
+                .offset(x: selectedTab == 0 ? -UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width / 4)
+                .animation(.easeInOut(duration: 0.5), value: selectedTab)
             
 //            Spacer()
             
