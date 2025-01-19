@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EB4F44A92D3D626E0095CCD7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44A82D3D626E0095CCD7 /* FirebaseAnalytics */; };
+		EB4F44AB2D3D626E0095CCD7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AA2D3D626E0095CCD7 /* FirebaseAuth */; };
+		EB4F44AD2D3D626E0095CCD7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AC2D3D626E0095CCD7 /* FirebaseCore */; };
+		EB4F44AF2D3D626E0095CCD7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AE2D3D626E0095CCD7 /* FirebaseFirestore */; };
+		EB4F44B12D3D626E0095CCD7 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44B02D3D626E0095CCD7 /* FirebaseMessaging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		EBA1AA182D0E42BA008DB548 /* YourHotel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourHotel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +31,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB4F44A92D3D626E0095CCD7 /* FirebaseAnalytics in Frameworks */,
+				EB4F44AF2D3D626E0095CCD7 /* FirebaseFirestore in Frameworks */,
+				EB4F44B12D3D626E0095CCD7 /* FirebaseMessaging in Frameworks */,
+				EB4F44AD2D3D626E0095CCD7 /* FirebaseCore in Frameworks */,
+				EB4F44AB2D3D626E0095CCD7 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +78,11 @@
 			);
 			name = YourHotel;
 			packageProductDependencies = (
+				EB4F44A82D3D626E0095CCD7 /* FirebaseAnalytics */,
+				EB4F44AA2D3D626E0095CCD7 /* FirebaseAuth */,
+				EB4F44AC2D3D626E0095CCD7 /* FirebaseCore */,
+				EB4F44AE2D3D626E0095CCD7 /* FirebaseFirestore */,
+				EB4F44B02D3D626E0095CCD7 /* FirebaseMessaging */,
 			);
 			productName = YourHotel;
 			productReference = EBA1AA182D0E42BA008DB548 /* YourHotel.app */;
@@ -94,6 +112,9 @@
 			);
 			mainGroup = EBA1AA0F2D0E42BA008DB548;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EBA1AA192D0E42BA008DB548 /* Products */;
 			projectDirPath = "";
@@ -328,6 +349,45 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EB4F44A82D3D626E0095CCD7 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		EB4F44AA2D3D626E0095CCD7 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		EB4F44AC2D3D626E0095CCD7 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		EB4F44AE2D3D626E0095CCD7 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		EB4F44B02D3D626E0095CCD7 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EBA1AA102D0E42BA008DB548 /* Project object */;
 }
