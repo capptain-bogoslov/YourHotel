@@ -1,0 +1,16 @@
+ 1003  cp -r YourHotel YourHotel_backup
+ 1004  d YourHotel
+ 1005  cd YourHotel
+ 1006  mkdir iOS
+ 1007  mv !(iOS|.git) iOS/
+ 1008  git status
+ 1009  ls
+ 1010  cd iOS
+ 1011  ls
+ 1012  cd YourHotel
+ 1013  ls
+ 1014  cd ../
+ 1015  cd ../
+ 1016  ls
+ 1017  git log -- iOS/YourHotel/Assets.xcassets
+ 1018  history
