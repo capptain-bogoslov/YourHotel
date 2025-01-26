@@ -16,4 +16,5 @@ extension Color {
     static let accentSecondaryColor = Color("SurfaceVariant")
     static let emphasisColor = Color("SurfaceBright")
     static let blackWhite = Color("BlackWhiteVariation")
+    static let whiteBlack = Color("WhiteBlackVariation")
 }
