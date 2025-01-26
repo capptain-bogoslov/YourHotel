@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EB1AA6752D402167002B9ACF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB1AA6742D402167002B9ACF /* GoogleService-Info.plist */; };
 		EB4F44A92D3D626E0095CCD7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44A82D3D626E0095CCD7 /* FirebaseAnalytics */; };
 		EB4F44AB2D3D626E0095CCD7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AA2D3D626E0095CCD7 /* FirebaseAuth */; };
 		EB4F44AD2D3D626E0095CCD7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AC2D3D626E0095CCD7 /* FirebaseCore */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EB1AA6742D402167002B9ACF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EBA1AA182D0E42BA008DB548 /* YourHotel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourHotel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -47,6 +49,7 @@
 			children = (
 				EBA1AA1A2D0E42BA008DB548 /* YourHotel */,
 				EBA1AA192D0E42BA008DB548 /* Products */,
+				EB1AA6742D402167002B9ACF /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -130,6 +133,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB1AA6752D402167002B9ACF /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

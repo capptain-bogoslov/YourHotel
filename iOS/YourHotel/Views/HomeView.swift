@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    
+    @EnvironmentObject var auth: UserAuthModel
     @State var tabSelected: Int = 1
     let minDragTranslationForSwipe: CGFloat = 50
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
@@ -127,6 +127,12 @@ struct HomeView: View {
             .toolbarBackground(.visible, for: .tabBar)
         }
         .tint(Color.primaryColor)
+        .onAppear {
+//            Task {
+//                await auth.fetchAuthToken()
+//            }
+            
+        }
     }
     
     //swipe gesture

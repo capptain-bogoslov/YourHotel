@@ -21,6 +21,7 @@ struct ProfileView: View {
             HStack {
                 Button {
                     self.selectedTab = 0
+
                 } label: {
                     Text("Sign in")
                         .applyFont(font: Font.applyStyle(selectedTab == 0 ? .headinleLarge : .titleMedium))
