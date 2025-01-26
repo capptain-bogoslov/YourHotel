@@ -1,16 +1,16 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
+//  Decode the base64 service account JSON from environment variables
+// const serviceAccount = JSON.parse(
+//    Buffer.from(functions.config().serviceaccount.key, "base64")
+//        .toString("utf8"),
+// );
+
 // Initialize Firebase Admin SDK
+// admin.initializeApp({
+//  credential: admin.credential.cert(serviceAccount),
+// });
 admin.initializeApp();
 
 // HTTPS function to generate a custom authentication token
