@@ -63,6 +63,18 @@
         }
       }
     },
+    "profile_scan" : {
+      "comment" : "Profile",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan"
+          }
+        }
+      }
+    },
     "profile_scan_description_label" : {
       "extractionState" : "manual",
       "localizations" : {

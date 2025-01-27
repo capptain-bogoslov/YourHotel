@@ -17,7 +17,7 @@ struct ProfileView: View {
             
             Image("hotel1")
                 .resizable()
-                .frame(height: 300)
+                .frame(height: (UIScreen.main.bounds.height / 3))
                 .scaledToFit()
             
             VStack(spacing: 10) {
@@ -100,11 +100,27 @@ struct ProfileView: View {
                 }
                 
                 Spacer()
+                
+                Button(action: {
+                    print("Button tapped!")
+                }) {
+                    Text("profile_scan")
+                        .foregroundColor(.whiteBlack)
+                        .applyFont(font: Font.applyStyle(
+                            .headinleLarge))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(Color.blackWhite)
+                        .cornerRadius(8)
+                }
+                .padding(20)
+                
             }
             .background {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.whiteBlack)
             }
+            .frame(height: (UIScreen.main.bounds.height * 2 / 3) + 20)
             .offset(x: 0, y: -20)
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
