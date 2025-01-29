@@ -51,6 +51,17 @@
         }
       }
     },
+    "profile_complete_registration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete Registration"
+          }
+        }
+      }
+    },
     "profile_room_registration" : {
       "comment" : "Headline",
       "extractionState" : "manual",
@@ -58,7 +69,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Room Registration"
+            "value" : "Room Check-in"
           }
         }
       }
@@ -86,6 +97,17 @@
         }
       }
     },
+    "profile_sign_in" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign In"
+          }
+        }
+      }
+    },
     "profile_sign_up_label" : {
       "comment" : "description text for sign up tab",
       "extractionState" : "manual",
@@ -108,12 +130,6 @@
           }
         }
       }
-    },
-    "Sign in" : {
-
-    },
-    "Sign up" : {
-
     }
   },
   "version" : "1.0"
