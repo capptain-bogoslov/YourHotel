@@ -30,7 +30,7 @@ struct YourHotelApp: App {
     var body: some Scene {
         WindowGroup {
             SplashScreen()
-                .environmentObject(userAuth)
+//                .environmentObject(userAuth)
 
         }
     }

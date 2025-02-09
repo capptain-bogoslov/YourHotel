@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Apple" : {
+
+    },
     "calendar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11,6 +14,12 @@
           }
         }
       }
+    },
+    "Create Account" : {
+
+    },
+    "Google" : {
+
     },
     "Hello" : {
 
@@ -39,6 +48,9 @@
           }
         }
       }
+    },
+    "OR" : {
+
     },
     "profile" : {
       "extractionState" : "manual",
@@ -120,6 +132,17 @@
         }
       }
     },
+    "profile_welcome_room" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to room %@"
+          }
+        }
+      }
+    },
     "services" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -130,6 +153,12 @@
           }
         }
       }
+    },
+    "Social Login" : {
+
+    },
+    "With Email" : {
+
     }
   },
   "version" : "1.0"

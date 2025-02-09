@@ -9,23 +9,28 @@ import SwiftUI
 
 struct RoomCheckInView: View {
     @State private var isBeating = false
-
+    
     var body: some View {
         VStack(spacing: 10) {
+            
+            Text("profile_sign_up_label")
+                .applyFont(font: Font.applyStyle(.bodyMedium))
             
             HStack {
                 Text("profile_room_registration")
                     .applyFont(font: Font.applyStyle(.displayLarge))
                     .frame( alignment: .leading)
-                                
+                
                 Image(systemName: "key.card.fill")
                     .font(.system(size: 30))
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.tertiaryColor)
                     .padding(.horizontal, 10)
                 Spacer()
-
+                
             }
+            .padding(.top, 10)
+            
             
             Text("profile_scan_description_label")
                 .applyFont(font: Font.applyStyle(.bodyLarge))
@@ -59,7 +64,24 @@ struct RoomCheckInView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 20)
-        .padding(.horizontal, 10)    }
+        .padding(.horizontal, 10)
+    
+        Spacer()
+        
+        Button(action: {
+            print("Button tapped!")
+        }) {
+            Text("profile_scan")
+                .foregroundColor(.whiteBlack)
+                .applyFont(font: Font.applyStyle(
+                    .headinleLarge))
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(Color.blackWhite)
+                .cornerRadius(8)
+        }
+        .padding(20)
+    }
 }
 
 #Preview {

@@ -105,6 +105,7 @@ struct HomeView: View {
                 
                 ZStack {
                     ProfileView()
+                        .ignoresSafeArea(.all, edges: .top)
                 }
 //                .onTapGesture {
 //                    if self.isDrawerOpen {
