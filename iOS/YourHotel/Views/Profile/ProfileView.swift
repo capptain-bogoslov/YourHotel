@@ -122,8 +122,9 @@ struct CompleteRegistrationView: View {
     @State var text: String = ""
     @State var showEmailPassword: Bool = true
     @State var showSocialLogin: Bool = true
-    
-    
+    @State var selectedField = "homeField"
+    @State var selectedIndex = 0
+
     var body: some View {
         VStack(spacing: 10) {
             HStack {
@@ -150,99 +151,91 @@ struct CompleteRegistrationView: View {
                     
                 }
                 
-                HStack {
-                    
-                    Text("With Email")
-                        .applyFont(font: Font.applyStyle(.titleMedium))
-                        .foregroundStyle(Color.tertiaryColor)
-                        .italic()
-                    
-                    
-                    Rectangle()
-                        .frame(height: 1)
-                        .foregroundColor(Color.tertiaryColor)
-                        .padding(.leading, 10)
-                    
-                    Image(systemName: "chevron.up")
-                        .foregroundStyle(Color.tertiaryColor)
-                        .rotationEffect(.degrees(showEmailPassword ? 180 : 0))
-                        .onTapGesture {
-                            withAnimation(.bouncy(duration: 0.3)) {
-                                showEmailPassword.toggle()
-                            }
-                        }
-                    
-                }
-                .padding(.horizontal, 10)
-                //                .padding(.top, 20)
-                .opacity(0.7)
+                SegmentedPicker(
+                    selectedIndex: $selectedIndex,
+                    options: ["profile_with_email", "profile_social"],
+                    selectedColor: UIColor(hex: "00D5CE") ?? .systemTeal,
+                    backgroundColor: UIColor(hex: "F0F0F0") ?? .lightGray,
+                    textColor: .black
+                    )
+                    .padding()
                 
-                if showEmailPassword {
+//                HStack {
+//                    
+//                    Text("With Email")
+//                        .applyFont(font: Font.applyStyle(.titleMedium))
+//                        .foregroundStyle(Color.tertiaryColor)
+//                        .italic()
+//                    
+//                    
+//                    Rectangle()
+//                        .frame(height: 1)
+//                        .foregroundColor(Color.tertiaryColor)
+//                        .padding(.leading, 10)
+//                    
+//                    Image(systemName: "chevron.up")
+//                        .foregroundStyle(Color.tertiaryColor)
+//                        .rotationEffect(.degrees(showEmailPassword ? 180 : 0))
+//                        .onTapGesture {
+//                            withAnimation(.bouncy(duration: 0.3)) {
+//                                showEmailPassword.toggle()
+//                            }
+//                        }
+//                    
+//                }
+//                .padding(.horizontal, 10)
+//                //                .padding(.top, 20)
+//                .opacity(0.7)
+//                
+                
+                
+                
+                if selectedIndex == 0 {
                     EmailPasswordView()
                         .transition(.opacity)
-                }
-                HStack {
-                    
-                    Rectangle()
-                        .frame(height: 1)
-                        .foregroundColor(Color.tertiaryColor)
-                        .padding(.leading, 10)
-                    
-                    Text("OR")
-                        .applyFont(font: Font.applyStyle(.titleMedium))
-                        .foregroundStyle(Color.secondaryColor)
-                    
-                    
-                    Rectangle()
-                        .frame(height: 1)
-                        .foregroundColor(Color.tertiaryColor)
-                        .padding(.leading, 10)
-                    
-                }
-                .padding(.horizontal, 10)
-                //                .padding(.top, 10)
-                
-                
-                HStack {
-                    
-                    Text("Social Login")
-                        .applyFont(font: Font.applyStyle(.titleMedium))
-                        .foregroundStyle(Color.tertiaryColor)
-                        .italic()
-                    
-                    
-                    Rectangle()
-                        .frame(height: 1)
-                        .foregroundColor(Color.tertiaryColor)
-                        .padding(.leading, 10)
-                    
-                    Image(systemName: "chevron.down")
-                        .foregroundStyle(Color.tertiaryColor)
-                        .foregroundStyle(Color.tertiaryColor)
-                        .rotationEffect(.degrees(showSocialLogin ? 180 : 0))
-                        .onTapGesture {
-                            withAnimation(.bouncy(duration: 0.3)) {
-                                showSocialLogin.toggle()
-                            }
-                        }
-                    
-                }
-                .padding(.horizontal, 10)
-                .padding(.top, 10)
-                .opacity(0.7)
-                
-                
-                if showSocialLogin {
+                } else {
                     SocialLoginView()
-                    
+
                 }
+
                 
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(Color.tertiaryColor)
-                    .padding(.leading, 10)
-                    .padding(.top, showSocialLogin ? 10 : 20)
                 
+//                HStack {
+//                    
+//                    Text("Social Login")
+//                        .applyFont(font: Font.applyStyle(.titleMedium))
+//                        .foregroundStyle(Color.tertiaryColor)
+//                        .italic()
+//                    
+//                    
+//                    Rectangle()
+//                        .frame(height: 1)
+//                        .foregroundColor(Color.tertiaryColor)
+//                        .padding(.leading, 10)
+//                    
+//                    Image(systemName: "chevron.down")
+//                        .foregroundStyle(Color.tertiaryColor)
+//                        .foregroundStyle(Color.tertiaryColor)
+//                        .rotationEffect(.degrees(showSocialLogin ? 180 : 0))
+//                        .onTapGesture {
+//                            withAnimation(.bouncy(duration: 0.3)) {
+//                                showSocialLogin.toggle()
+//                            }
+//                        }
+//                    
+//                }
+//                .padding(.horizontal, 10)
+//                .padding(.top, 10)
+//                .opacity(0.7)
+                
+                
+
+//                Rectangle()
+//                    .frame(height: 1)
+//                    .foregroundColor(Color.tertiaryColor)
+//                    .padding(.leading, 10)
+//                    .padding(.top, showSocialLogin ? 10 : 20)
+//                
             }
             .padding(.horizontal, 10)
             .padding(.top, 20)

@@ -132,6 +132,17 @@
         }
       }
     },
+    "profile_social" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Social Login"
+          }
+        }
+      }
+    },
     "profile_welcome_room" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -139,6 +150,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Welcome to room %@"
+          }
+        }
+      }
+    },
+    "profile_with_email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Email"
           }
         }
       }
