@@ -18,6 +18,8 @@ extension Color {
     static let emphasisColor = Color("SurfaceBright")
     static let blackWhite = Color("BlackWhiteVariation")
     static let whiteBlack = Color("WhiteBlackVariation")
+
+
 }
 
 extension UIColor {

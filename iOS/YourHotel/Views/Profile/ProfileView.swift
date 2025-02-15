@@ -160,82 +160,15 @@ struct CompleteRegistrationView: View {
                     )
                     .padding()
                 
-//                HStack {
-//                    
-//                    Text("With Email")
-//                        .applyFont(font: Font.applyStyle(.titleMedium))
-//                        .foregroundStyle(Color.tertiaryColor)
-//                        .italic()
-//                    
-//                    
-//                    Rectangle()
-//                        .frame(height: 1)
-//                        .foregroundColor(Color.tertiaryColor)
-//                        .padding(.leading, 10)
-//                    
-//                    Image(systemName: "chevron.up")
-//                        .foregroundStyle(Color.tertiaryColor)
-//                        .rotationEffect(.degrees(showEmailPassword ? 180 : 0))
-//                        .onTapGesture {
-//                            withAnimation(.bouncy(duration: 0.3)) {
-//                                showEmailPassword.toggle()
-//                            }
-//                        }
-//                    
-//                }
-//                .padding(.horizontal, 10)
-//                //                .padding(.top, 20)
-//                .opacity(0.7)
-//                
-                
-                
-                
                 if selectedIndex == 0 {
                     EmailPasswordView()
                         .transition(.opacity)
                 } else {
                     SocialLoginView()
+                        .padding(.horizontal, 20)
 
                 }
-
-                
-                
-//                HStack {
-//                    
-//                    Text("Social Login")
-//                        .applyFont(font: Font.applyStyle(.titleMedium))
-//                        .foregroundStyle(Color.tertiaryColor)
-//                        .italic()
-//                    
-//                    
-//                    Rectangle()
-//                        .frame(height: 1)
-//                        .foregroundColor(Color.tertiaryColor)
-//                        .padding(.leading, 10)
-//                    
-//                    Image(systemName: "chevron.down")
-//                        .foregroundStyle(Color.tertiaryColor)
-//                        .foregroundStyle(Color.tertiaryColor)
-//                        .rotationEffect(.degrees(showSocialLogin ? 180 : 0))
-//                        .onTapGesture {
-//                            withAnimation(.bouncy(duration: 0.3)) {
-//                                showSocialLogin.toggle()
-//                            }
-//                        }
-//                    
-//                }
-//                .padding(.horizontal, 10)
-//                .padding(.top, 10)
-//                .opacity(0.7)
-                
-                
-
-//                Rectangle()
-//                    .frame(height: 1)
-//                    .foregroundColor(Color.tertiaryColor)
-//                    .padding(.leading, 10)
-//                    .padding(.top, showSocialLogin ? 10 : 20)
-//                
+               
             }
             .padding(.horizontal, 10)
             .padding(.top, 20)
@@ -287,19 +220,15 @@ struct EmailPasswordView: View {
                     focusedField = nil
                 }
             
-            Button(action: {
-                print("Button tapped!")
-            }) {
-                Text("Create Account")
-                    .foregroundColor(.whiteBlack)
-                    .applyFont(font: Font.applyStyle(
-                        .headinleLarge))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 40)
-                    .background(Color.blackWhite)
-                    .cornerRadius(8)
-            }
-            .padding(20)
+                CustomButton(
+                    text: "profile_create_account",
+                    colors: [Color.tertiaryColor, .tertiary, .surface],
+                    height: 40,
+                    font: Font.applyStyle(.headinleLarge)
+                )
+                .padding(20)
+
+ 
         }
     }
 }
@@ -309,20 +238,38 @@ struct SocialLoginView: View {
     var body: some View {
         VStack {
             
-            
-            Button(action: {
-                print("Button tapped!")
-            }) {
-                Text("Google")
-                    .foregroundColor(.whiteBlack)
-                    .applyFont(font: Font.applyStyle(
-                        .headinleLarge))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 40)
-                    .background(Color.blackWhite)
-                    .cornerRadius(8)
+            //Google Login Button
+            Button {
+                Task {
+//                    self.isLoading = true
+//                    await auth.signInWithGoogleAsync()
+                }
+            } label: {
+                
+                HStack(spacing: 12) {
+                    // Google's logo
+                    Image("google")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                    
+                    Text("profile_sign_in_google")
+                        .applyFont(font: Font.applyStyle(.titleMedium))
+                        .foregroundColor(.googleFont)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background(.googleBackground)
+                .cornerRadius(8)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(.googleStroke, lineWidth: 1)
+                }
             }
-            .padding(10)
+//            .disabled(isLoading)
+//            .opacity(isLoading ? 0.5 : 1.0)
             
             Button(action: {
                 print("Button tapped!")

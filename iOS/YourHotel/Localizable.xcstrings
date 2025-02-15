@@ -74,6 +74,17 @@
         }
       }
     },
+    "profile_create_account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Account"
+          }
+        }
+      }
+    },
     "profile_room_registration" : {
       "comment" : "Headline",
       "extractionState" : "manual",
@@ -116,6 +127,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sign In"
+          }
+        }
+      }
+    },
+    "profile_sign_in_google" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Google"
           }
         }
       }
