@@ -86,7 +86,7 @@ struct ProfileView: View {
                     
                 } else {
                     
-                    //                                        RoomCheckInView()
+//                    RoomCheckInView()
                     
                     CompleteRegistrationView()
                     
@@ -100,6 +100,7 @@ struct ProfileView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.whiteBlack)
             }
+//            .background(.red)
             .frame(height: (UIScreen.main.bounds.height * 2 / 3) + 20)
             .offset(x: 0, y: -20)
         }
@@ -279,11 +280,11 @@ struct SocialLoginView: View {
                     .applyFont(font: Font.applyStyle(
                         .headinleLarge))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 40)
+                    .frame(height: 45)
                     .background(Color.blackWhite)
                     .cornerRadius(8)
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 0)
         }
     }
 }

@@ -15,12 +15,6 @@
         }
       }
     },
-    "Create Account" : {
-
-    },
-    "Google" : {
-
-    },
     "Hello" : {
 
     },
@@ -48,9 +42,6 @@
           }
         }
       }
-    },
-    "OR" : {
-
     },
     "profile" : {
       "extractionState" : "manual",
@@ -197,12 +188,6 @@
           }
         }
       }
-    },
-    "Social Login" : {
-
-    },
-    "With Email" : {
-
     }
   },
   "version" : "1.0"
