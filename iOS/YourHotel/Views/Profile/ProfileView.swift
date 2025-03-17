@@ -10,8 +10,10 @@ import SwiftUI
 struct ProfileView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     
-    @State private var selectedTab = 1
+    //    @State private var selectedTab = 1
     @State private var isBeating = false
+    @State private var showScanner: Bool = false
+    @State private var scannedRoom: String?
     
     var body: some View {
         
@@ -24,75 +26,12 @@ struct ProfileView: View {
             
             VStack(spacing: 10) {
                 
-                //                HStack {
-                //                    Button {
-                //                        self.selectedTab = 0
-                //
-                //                    } label: {
-                //                        Text("Sign in")
-                //                            .applyFont(font: Font.applyStyle(selectedTab == 0 ? .headinleLarge : .titleMedium))
-                //                            .foregroundStyle(selectedTab == 0 ? Color.primaryColor : .gray)
-                //                    }
-                //
-                //                    Spacer()
-                //
-                //                    Button {
-                //                        self.selectedTab = 1
-                //                    } label: {
-                //                        Text("Sign up")
-                //                            .applyFont(font: Font.applyStyle(selectedTab == 1 ? .headinleLarge : .titleMedium))
-                //                            .foregroundStyle(selectedTab == 1 ? Color.primaryColor : .gray)
-                //                    }
-                //
-                //
-                //                }
-                //                .padding(.horizontal, 40)
-                //                .clipShape(RoundedRectangle(cornerRadius: 10))
-                //
-                //                Rectangle()
-                //                    .fill(Color.secondaryColor)
-                //                    .frame(width: UIScreen.main.bounds.width / 2, height:
-                //                            3)
-                //                    .offset(x: selectedTab == 0 ? -UIScreen.main.bounds.width / 4 : UIScreen.main.bounds.width / 4)
-                //                    .animation(.easeInOut(duration: 0.5), value: selectedTab)
-                //            Spacer()
-                
-                if selectedTab == 0 {
-                    
-                    VStack(spacing: 10) {
-                        HStack {
-                            Text("profile_sign_in")
-                                .applyFont(font: Font.applyStyle(.displayLarge))
-                            //                            .background(.green)
-                                .frame( alignment: .leading)
-                            
-                            //                            Spacer()
-                            
-                            Image(systemName: "lock.open.fill")
-                                .font(.system(size: 25))
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(Color.tertiaryColor)
-                                .padding(.horizontal, 10)
-                            
-                            Spacer()
-                            
-                        }
-                        
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.top, 20)
-                    
-                    
-                    
+                if let code = scannedRoom {
+                    Text(code)
+                        .font(.system(.largeTitle))
                 } else {
-                    
-//                    RoomCheckInView()
-                    
-                    CompleteRegistrationView()
-                    
-                    
+                    RoomCheckInView(showScanner: $showScanner)
                 }
-                
                 
                 
             }
@@ -100,9 +39,12 @@ struct ProfileView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.whiteBlack)
             }
-//            .background(.red)
+            //            .background(.red)
             .frame(height: (UIScreen.main.bounds.height * 2 / 3) + 20)
             .offset(x: 0, y: -20)
+        }
+        .sheet(isPresented: $showScanner) {
+            QRCodeScannerView(scannedCode: $scannedRoom)
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .ignoresSafeArea()
@@ -114,178 +56,107 @@ struct ProfileView: View {
 }
 
 
-enum AuthenticationFields {
-    case email, password, repeatPassword
-}
+import SwiftUI
+import AVFoundation
 
-struct CompleteRegistrationView: View {
+
+struct QRCodeScannerView: UIViewControllerRepresentable {
+    @Binding var scannedCode: String?
+    @Environment(\.dismiss) private var dismiss // Add dismiss action
+
     
-    @State var text: String = ""
-    @State var showEmailPassword: Bool = true
-    @State var showSocialLogin: Bool = true
-    @State var selectedField = "homeField"
-    @State var selectedIndex = 0
-
-    var body: some View {
-        VStack(spacing: 10) {
-            HStack {
-                Text(String(format: NSLocalizedString("profile_welcome_room", comment: ""), "304"))
-                    .applyFont(font: Font.applyStyle(.headingMedium))
-                    .padding(.top, 10)
+    func makeUIViewController(context: Context) -> QRCodeScannerViewController {
+        let viewController = QRCodeScannerViewController()
+        viewController.delegate = context.coordinator
+        return viewController
+    }
+    
+    func updateUIViewController(_ uiViewController: QRCodeScannerViewController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, QRCodeScannerDelegate {
+        var parent: QRCodeScannerView
+        
+        init(_ parent: QRCodeScannerView) {
+            self.parent = parent
+        }
+        
+        func didFindCode(_ code: String) {
+            if code.starts(with: "room:") {
+                // Extract the room number
+                let roomNumber = String(code.dropFirst(5))
+                parent.scannedCode = roomNumber // Pass the room number to the parent view
+                parent.dismiss()
             }
-            
-            VStack(spacing: 10) {
-                HStack {
-                    Text("profile_complete_registration")
-                        .applyFont(font: Font.applyStyle(.displayMedium))
-                        .frame( alignment: .leading)
-                    
-                    //                            Spacer()
-                    
-                    Image(systemName: "rectangle.portrait.and.arrow.right.fill")
-                        .font(.system(size: 25))
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(Color.blackWhite, Color.tertiaryColor)
-                        .padding(.horizontal, 10)
-                    
-                    Spacer()
-                    
-                }
-                
-                SegmentedPicker(
-                    selectedIndex: $selectedIndex,
-                    options: ["profile_with_email", "profile_social"],
-                    selectedColor: UIColor(hex: "00D5CE") ?? .systemTeal,
-                    backgroundColor: UIColor(hex: "F0F0F0") ?? .lightGray,
-                    textColor: .black
-                    )
-                    .padding()
-                
-                if selectedIndex == 0 {
-                    EmailPasswordView()
-                        .transition(.opacity)
-                } else {
-                    SocialLoginView()
-                        .padding(.horizontal, 20)
-
-                }
-               
-            }
-            .padding(.horizontal, 10)
-            .padding(.top, 20)
-            
-            Spacer()
         }
     }
 }
 
-struct EmailPasswordView: View {
-    
-    @FocusState private var focusedField: AuthenticationFields?
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var repeatPassword: String = ""
-    
-    
-    var body: some View {
-        VStack {
+protocol QRCodeScannerDelegate: AnyObject {
+    func didFindCode(_ code: String)
+}
 
+class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    weak var delegate: QRCodeScannerDelegate?
+    var captureSession: AVCaptureSession!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        captureSession = AVCaptureSession()
+        
+        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
+        let videoInput: AVCaptureDeviceInput
+        
+        do {
+            videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+        } catch {
+            return
+        }
+        
+        if captureSession.canAddInput(videoInput) {
+            captureSession.addInput(videoInput)
+        } else {
+            return
+        }
+        
+        let metadataOutput = AVCaptureMetadataOutput()
+        
+        if captureSession.canAddOutput(metadataOutput) {
+            captureSession.addOutput(metadataOutput)
             
-            CustomTextField(value: $email, isPassword: false, placeholder: "Email")
-                .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
-                .focused($focusedField, equals: .email)
-                .submitLabel(.next)
-                .scaleEffect(focusedField == .email ? 1.05 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: focusedField)
-                .onSubmit {
-                    focusedField = .password
-                }
-            
-            CustomTextField(value: $password, isPassword: true, placeholder: "Password")
-                .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
-                .focused($focusedField, equals: .password)
-                .submitLabel(.next)
-                .scaleEffect(focusedField == .password ? 1.05 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: focusedField)
-                .onSubmit {
-                    focusedField = .repeatPassword
-                }
-            
-            CustomTextField(value: $repeatPassword, isPassword: true, placeholder: "Confirm Password")
-                .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
-                .focused($focusedField, equals: .repeatPassword)
-                .submitLabel(.go)
-                .scaleEffect(focusedField == .repeatPassword ? 1.05 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: focusedField)
-                .onSubmit {
-                    focusedField = nil
-                }
-            
-                CustomButton(
-                    text: "profile_create_account",
-                    colors: [Color.tertiaryColor, .tertiary, .surface],
-                    height: 40,
-                    font: Font.applyStyle(.headinleLarge)
-                )
-                .padding(20)
-
- 
+            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+            metadataOutput.metadataObjectTypes = [.qr]
+        } else {
+            return
+        }
+        
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.frame = view.layer.bounds
+        previewLayer.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(previewLayer)
+        
+        // Start the capture session on a background thread
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession.startRunning()
+        }
+    }
+    
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        if let metadataObject = metadataObjects.first {
+            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
+            guard let stringValue = readableObject.stringValue else { return }
+            delegate?.didFindCode(stringValue)
         }
     }
 }
 
-
-struct SocialLoginView: View {
-    var body: some View {
-        VStack {
-            
-            //Google Login Button
-            Button {
-                Task {
-//                    self.isLoading = true
-//                    await auth.signInWithGoogleAsync()
-                }
-            } label: {
-                
-                HStack(spacing: 12) {
-                    // Google's logo
-                    Image("google")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                    
-                    Text("profile_sign_in_google")
-                        .applyFont(font: Font.applyStyle(.titleMedium))
-                        .foregroundColor(.googleFont)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .background(.googleBackground)
-                .cornerRadius(8)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.googleStroke, lineWidth: 1)
-                }
-            }
-//            .disabled(isLoading)
-//            .opacity(isLoading ? 0.5 : 1.0)
-            
-            Button(action: {
-                print("Button tapped!")
-            }) {
-                Text("Apple")
-                    .foregroundColor(.whiteBlack)
-                    .applyFont(font: Font.applyStyle(
-                        .headinleLarge))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 45)
-                    .background(Color.blackWhite)
-                    .cornerRadius(8)
-            }
-            .padding(.horizontal, 0)
-        }
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}
 

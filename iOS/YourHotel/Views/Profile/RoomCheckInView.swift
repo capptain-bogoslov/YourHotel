@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RoomCheckInView: View {
     @State private var isBeating = false
+    @Binding var showScanner: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -65,11 +66,9 @@ struct RoomCheckInView: View {
             }
             .padding(.top, 20)
             .padding(.horizontal, 10)
-            
-            //        Spacer()
-            
+                        
             Button(action: {
-                print("Button tapped!")
+                showScanner = true
             }) {
                 Text("profile_scan")
                     .foregroundColor(.whiteBlack)
@@ -82,6 +81,7 @@ struct RoomCheckInView: View {
             }
             .padding(20)
             .padding(.top, 40)
+            .disabled(showScanner)
             
             Spacer()
         }
@@ -91,5 +91,5 @@ struct RoomCheckInView: View {
 }
 
 #Preview {
-    RoomCheckInView()
+    RoomCheckInView(showScanner: .constant(false))
 }
