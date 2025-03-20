@@ -11,6 +11,49 @@ import FirebaseAuth
 
 class UserAuthModel: ObservableObject {
 
+
+    func sendVerificationCode(phoneNumber: String) {
+        // Enable debug mode (ONLY for testing)
+        if let authSettings = Auth.auth().settings {
+            authSettings.isAppVerificationDisabledForTesting = true
+        } else {
+            print("Error: Firebase Auth settings are nil.")
+        }
+
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
+            if let error = error {
+                print("Error sending verification code: \(error.localizedDescription)")
+                return
+            }
+
+            // Safely unwrap verificationID before saving
+            if let verificationID = verificationID {
+                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+                print("Verification code sent! Verification ID saved.")
+            } else {
+                print("Error: Received nil verificationID.")
+            }
+        }
+    }
+    
+    
+    func verifyOTP(otpCode: String) {
+        guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
+            print("No verification ID found.")
+            return
+        }
+
+        let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: otpCode)
+
+        Auth.auth().signIn(with: credential) { authResult, error in
+            if let error = error {
+                print("Verification failed: \(error.localizedDescription)")
+            } else {
+                print("User logged in successfully!")
+            }
+        }
+    }
+    
     // Function to get the authentication token
 //    func fetchAuthToken() async {
 //        

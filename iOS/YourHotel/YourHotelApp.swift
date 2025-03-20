@@ -10,14 +10,41 @@ import SwiftUI
 import FirebaseCore
 import UserNotifications
 import FirebaseMessaging
+import FirebaseAuth
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
         //Configure Firebase
         FirebaseApp.configure()
+        
+        //APNs
+        UNUserNotificationCenter.current().delegate = self
+        application.registerForRemoteNotifications()
+        
+        
+        if let urlTypes = Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] {
+            for type in urlTypes {
+                if let schemes = type["CFBundleURLSchemes"] as? [String] {
+                    print("Registered URL Schemes: \(schemes)")
+                }
+            }
+        }
+        
         return true
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Auth.auth().setAPNSToken(deviceToken, type: .unknown)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if Auth.auth().canHandleNotification(userInfo) {
+            completionHandler(.noData)
+            return
+        }
+        completionHandler(.newData)
     }
 }
 
@@ -30,7 +57,7 @@ struct YourHotelApp: App {
     var body: some Scene {
         WindowGroup {
             SplashScreen()
-//                .environmentObject(userAuth)
+                .environmentObject(userAuth)
 
         }
     }
