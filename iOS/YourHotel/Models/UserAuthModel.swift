@@ -15,11 +15,14 @@ class UserAuthModel: ObservableObject {
     func sendVerificationCode(phoneNumber: String) {
         // Enable debug mode (ONLY for testing)
         if let authSettings = Auth.auth().settings {
-            authSettings.isAppVerificationDisabledForTesting = true
+            authSettings.isAppVerificationDisabledForTesting = false
         } else {
             print("Error: Firebase Auth settings are nil.")
         }
 
+        // Localize message.
+        Auth.auth().languageCode = "fr";
+        
         PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
             if let error = error {
                 print("Error sending verification code: \(error.localizedDescription)")
