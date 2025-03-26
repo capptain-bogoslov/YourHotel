@@ -8,46 +8,258 @@ import Foundation
 
 struct Constants {
     
-    let countryDialCodes: [String: String] = [
-        "AF": "+93", "AL": "+355", "DZ": "+213", "AS": "+1", "AD": "+376",
-        "AO": "+244", "AI": "+1", "AG": "+1", "AR": "+54", "AM": "+374",
-        "AW": "+297", "AU": "+61", "AT": "+43", "AZ": "+994", "BS": "+1",
-        "BH": "+973", "BD": "+880", "BB": "+1", "BY": "+375", "BE": "+32",
-        "BZ": "+501", "BJ": "+229", "BM": "+1", "BT": "+975", "BO": "+591",
-        "BA": "+387", "BW": "+267", "BR": "+55", "IO": "+246", "BN": "+673",
-        "BG": "+359", "BF": "+226", "BI": "+257", "KH": "+855", "CM": "+237",
-        "CA": "+1", "CV": "+238", "KY": "+1", "CF": "+236", "TD": "+235",
-        "CL": "+56", "CN": "+86", "CO": "+57", "KM": "+269", "CG": "+242",
-        "CD": "+243", "CR": "+506", "HR": "+385", "CU": "+53", "CY": "+357",
-        "CZ": "+420", "DK": "+45", "DJ": "+253", "DM": "+1", "DO": "+1",
-        "EC": "+593", "EG": "+20", "SV": "+503", "GQ": "+240", "ER": "+291",
-        "EE": "+372", "ET": "+251", "FJ": "+679", "FI": "+358", "FR": "+33",
-        "GA": "+241", "GM": "+220", "GE": "+995", "DE": "+49", "GH": "+233",
-        "GR": "+30", "GD": "+1", "GT": "+502", "GN": "+224", "GW": "+245",
-        "GY": "+592", "HT": "+509", "HN": "+504", "HU": "+36", "IS": "+354",
-        "IN": "+91", "ID": "+62", "IR": "+98", "IQ": "+964", "IE": "+353",
-        "IL": "+972", "IT": "+39", "JM": "+1", "JP": "+81", "JO": "+962",
-        "KZ": "+7", "KE": "+254", "KI": "+686", "KP": "+850", "KR": "+82",
-        "KW": "+965", "KG": "+996", "LA": "+856", "LV": "+371", "LB": "+961",
-        "LS": "+266", "LR": "+231", "LY": "+218", "LI": "+423", "LT": "+370",
-        "LU": "+352", "MG": "+261", "MW": "+265", "MY": "+60", "MV": "+960",
-        "ML": "+223", "MT": "+356", "MH": "+692", "MR": "+222", "MU": "+230",
-        "MX": "+52", "FM": "+691", "MD": "+373", "MC": "+377", "MN": "+976",
-        "ME": "+382", "MA": "+212", "MZ": "+258", "MM": "+95", "NA": "+264",
-        "NR": "+674", "NP": "+977", "NL": "+31", "NZ": "+64", "NI": "+505",
-        "NE": "+227", "NG": "+234", "NO": "+47", "OM": "+968", "PK": "+92",
-        "PW": "+680", "PA": "+507", "PG": "+675", "PY": "+595", "PE": "+51",
-        "PH": "+63", "PL": "+48", "PT": "+351", "QA": "+974", "RO": "+40",
-        "RU": "+7", "RW": "+250", "WS": "+685", "SM": "+378", "ST": "+239",
-        "SA": "+966", "SN": "+221", "RS": "+381", "SC": "+248", "SL": "+232",
-        "SG": "+65", "SK": "+421", "SI": "+386", "SB": "+677", "SO": "+252",
-        "ZA": "+27", "ES": "+34", "LK": "+94", "SD": "+249", "SR": "+597",
-        "SZ": "+268", "SE": "+46", "CH": "+41", "SY": "+963", "TW": "+886",
-        "TJ": "+992", "TZ": "+255", "TH": "+66", "TL": "+670", "TG": "+228",
-        "TO": "+676", "TT": "+1", "TN": "+216", "TR": "+90", "TM": "+993",
-        "TV": "+688", "UG": "+256", "UA": "+380", "AE": "+971", "GB": "+44",
-        "US": "+1", "UY": "+598", "UZ": "+998", "VU": "+678", "VA": "+39",
-        "VE": "+58", "VN": "+84", "YE": "+967", "ZM": "+260", "ZW": "+263"
+    static let countryDialCodes: [String: String] = [
+        "AC": "+247", // Ascension Island
+        "AD": "+376", // Andorra
+        "AE": "+971", // United Arab Emirates
+        "AF": "+93",  // Afghanistan
+        "AG": "+1-268", // Antigua and Barbuda
+        "AI": "+1-264", // Anguilla
+        "AL": "+355", // Albania
+        "AM": "+374", // Armenia
+        "AO": "+244", // Angola
+        "AQ": "+672", // Antarctica
+        "AR": "+54",  // Argentina
+        "AS": "+1-684", // American Samoa
+        "AT": "+43",  // Austria
+        "AU": "+61",  // Australia
+        "AW": "+297", // Aruba
+        "AX": "+358", // Åland Islands
+        "AZ": "+994", // Azerbaijan
+        "BA": "+387", // Bosnia and Herzegovina
+        "BB": "+1-246", // Barbados
+        "BD": "+880", // Bangladesh
+        "BE": "+32",  // Belgium
+        "BF": "+226", // Burkina Faso
+        "BG": "+359", // Bulgaria
+        "BH": "+973", // Bahrain
+        "BI": "+257", // Burundi
+        "BJ": "+229", // Benin
+        "BL": "+590", // Saint Barthélemy
+        "BM": "+1-441", // Bermuda
+        "BN": "+673", // Brunei
+        "BO": "+591", // Bolivia
+        "BQ": "+599", // Caribbean Netherlands
+        "BR": "+55",  // Brazil
+        "BS": "+1-242", // Bahamas
+        "BT": "+975", // Bhutan
+        "BV": "+47",  // Bouvet Island (uses Norway's code)
+        "BW": "+267", // Botswana
+        "BY": "+375", // Belarus
+        "BZ": "+501", // Belize
+        "CA": "+1",   // Canada
+        "CC": "+61",  // Cocos (Keeling) Islands
+        "CD": "+243", // Congo (DRC)
+        "CF": "+236", // Central African Republic
+        "CG": "+242", // Congo (Republic)
+        "CH": "+41",  // Switzerland
+        "CI": "+225", // Côte d'Ivoire
+        "CK": "+682", // Cook Islands
+        "CL": "+56",  // Chile
+        "CM": "+237", // Cameroon
+        "CN": "+86",  // China
+        "CO": "+57",  // Colombia
+        "CR": "+506", // Costa Rica
+        "CU": "+53",  // Cuba
+        "CV": "+238", // Cape Verde
+        "CW": "+599", // Curaçao
+        "CX": "+61",  // Christmas Island
+        "CY": "+357", // Cyprus
+        "CZ": "+420", // Czech Republic
+        "DE": "+49",  // Germany
+        "DJ": "+253", // Djibouti
+        "DK": "+45",  // Denmark
+        "DM": "+1-767", // Dominica
+        "DO": "+1-809", // Dominican Republic
+        "DZ": "+213", // Algeria
+        "EC": "+593", // Ecuador
+        "EE": "+372", // Estonia
+        "EG": "+20",  // Egypt
+        "EH": "+212", // Western Sahara
+        "ER": "+291", // Eritrea
+        "ES": "+34",  // Spain
+        "ET": "+251", // Ethiopia
+        "FI": "+358", // Finland
+        "FJ": "+679", // Fiji
+        "FK": "+500", // Falkland Islands
+        "FM": "+691", // Micronesia
+        "FO": "+298", // Faroe Islands
+        "FR": "+33",  // France
+        "GA": "+241", // Gabon
+        "GB": "+44",  // United Kingdom
+        "GD": "+1-473", // Grenada
+        "GE": "+995", // Georgia
+        "GF": "+594", // French Guiana
+        "GG": "+44",  // Guernsey
+        "GH": "+233", // Ghana
+        "GI": "+350", // Gibraltar
+        "GL": "+299", // Greenland
+        "GM": "+220", // Gambia
+        "GN": "+224", // Guinea
+        "GP": "+590", // Guadeloupe
+        "GQ": "+240", // Equatorial Guinea
+        "GR": "+30",  // Greece
+        "GS": "+500", // South Georgia
+        "GT": "+502", // Guatemala
+        "GU": "+1-671", // Guam
+        "GW": "+245", // Guinea-Bissau
+        "GY": "+592", // Guyana
+        "HK": "+852", // Hong Kong
+        "HM": "+672", // Heard & McDonald Islands
+        "HN": "+504", // Honduras
+        "HR": "+385", // Croatia
+        "HT": "+509", // Haiti
+        "HU": "+36",  // Hungary
+        "ID": "+62",  // Indonesia
+        "IE": "+353", // Ireland
+        "IL": "+972", // Israel
+        "IM": "+44",  // Isle of Man
+        "IN": "+91",  // India
+        "IO": "+246", // British Indian Ocean Territory
+        "IQ": "+964", // Iraq
+        "IR": "+98",  // Iran
+        "IS": "+354", // Iceland
+        "IT": "+39",  // Italy
+        "JE": "+44",  // Jersey
+        "JM": "+1-876", // Jamaica
+        "JO": "+962", // Jordan
+        "JP": "+81",  // Japan
+        "KE": "+254", // Kenya
+        "KG": "+996", // Kyrgyzstan
+        "KH": "+855", // Cambodia
+        "KI": "+686", // Kiribati
+        "KM": "+269", // Comoros
+        "KN": "+1-869", // Saint Kitts and Nevis
+        "KP": "+850", // North Korea
+        "KR": "+82",  // South Korea
+        "KW": "+965", // Kuwait
+        "KY": "+1-345", // Cayman Islands
+        "KZ": "+7",   // Kazakhstan
+        "LA": "+856", // Laos
+        "LB": "+961", // Lebanon
+        "LC": "+1-758", // Saint Lucia
+        "LI": "+423", // Liechtenstein
+        "LK": "+94",  // Sri Lanka
+        "LR": "+231", // Liberia
+        "LS": "+266", // Lesotho
+        "LT": "+370", // Lithuania
+        "LU": "+352", // Luxembourg
+        "LV": "+371", // Latvia
+        "LY": "+218", // Libya
+        "MA": "+212", // Morocco
+        "MC": "+377", // Monaco
+        "MD": "+373", // Moldova
+        "ME": "+382", // Montenegro
+        "MF": "+590", // Saint Martin
+        "MG": "+261", // Madagascar
+        "MH": "+692", // Marshall Islands
+        "MK": "+389", // North Macedonia
+        "ML": "+223", // Mali
+        "MM": "+95",  // Myanmar
+        "MN": "+976", // Mongolia
+        "MO": "+853", // Macau
+        "MP": "+1-670", // Northern Mariana Islands
+        "MQ": "+596", // Martinique
+        "MR": "+222", // Mauritania
+        "MS": "+1-664", // Montserrat
+        "MT": "+356", // Malta
+        "MU": "+230", // Mauritius
+        "MV": "+960", // Maldives
+        "MW": "+265", // Malawi
+        "MX": "+52",  // Mexico
+        "MY": "+60",  // Malaysia
+        "MZ": "+258", // Mozambique
+        "NA": "+264", // Namibia
+        "NC": "+687", // New Caledonia
+        "NE": "+227", // Niger
+        "NF": "+672", // Norfolk Island
+        "NG": "+234", // Nigeria
+        "NI": "+505", // Nicaragua
+        "NL": "+31",  // Netherlands
+        "NO": "+47",  // Norway
+        "NP": "+977", // Nepal
+        "NR": "+674", // Nauru
+        "NU": "+683", // Niue
+        "NZ": "+64",  // New Zealand
+        "OM": "+968", // Oman
+        "PA": "+507", // Panama
+        "PE": "+51",  // Peru
+        "PF": "+689", // French Polynesia
+        "PG": "+675", // Papua New Guinea
+        "PH": "+63",  // Philippines
+        "PK": "+92",  // Pakistan
+        "PL": "+48",  // Poland
+        "PM": "+508", // Saint Pierre and Miquelon
+        "PN": "+64",  // Pitcairn Islands
+        "PR": "+1-787", // Puerto Rico
+        "PS": "+970", // Palestine
+        "PT": "+351", // Portugal
+        "PW": "+680", // Palau
+        "PY": "+595", // Paraguay
+        "QA": "+974", // Qatar
+        "RE": "+262", // Réunion
+        "RO": "+40",  // Romania
+        "RS": "+381", // Serbia
+        "RU": "+7",   // Russia
+        "RW": "+250", // Rwanda
+        "SA": "+966", // Saudi Arabia
+        "SB": "+677", // Solomon Islands
+        "SC": "+248", // Seychelles
+        "SD": "+249", // Sudan
+        "SE": "+46",  // Sweden
+        "SG": "+65",  // Singapore
+        "SH": "+290", // Saint Helena
+        "SI": "+386", // Slovenia
+        "SJ": "+47",  // Svalbard and Jan Mayen
+        "SK": "+421", // Slovakia
+        "SL": "+232", // Sierra Leone
+        "SM": "+378", // San Marino
+        "SN": "+221", // Senegal
+        "SO": "+252", // Somalia
+        "SR": "+597", // Suriname
+        "SS": "+211", // South Sudan
+        "ST": "+239", // Sao Tome and Principe
+        "SV": "+503", // El Salvador
+        "SX": "+1-721", // Sint Maarten
+        "SY": "+963", // Syria
+        "SZ": "+268", // Eswatini
+        "TC": "+1-649", // Turks and Caicos Islands
+        "TD": "+235", // Chad
+        "TF": "+262", // French Southern Territories
+        "TG": "+228", // Togo
+        "TH": "+66",  // Thailand
+        "TJ": "+992", // Tajikistan
+        "TK": "+690", // Tokelau
+        "TL": "+670", // East Timor
+        "TM": "+993", // Turkmenistan
+        "TN": "+216", // Tunisia
+        "TO": "+676", // Tonga
+        "TR": "+90",  // Turkey
+        "TT": "+1-868", // Trinidad and Tobago
+        "TV": "+688", // Tuvalu
+        "TW": "+886", // Taiwan
+        "TZ": "+255", // Tanzania
+        "UA": "+380", // Ukraine
+        "UG": "+256", // Uganda
+        "UM": "+1",   // United States Minor Outlying Islands
+        "US": "+1",   // United States
+        "UY": "+598", // Uruguay
+        "UZ": "+998", // Uzbekistan
+        "VA": "+379", // Vatican City
+        "VC": "+1-784", // Saint Vincent and the Grenadines
+        "VE": "+58",  // Venezuela
+        "VG": "+1-284", // British Virgin Islands
+        "VI": "+1-340", // U.S. Virgin Islands
+        "VN": "+84",  // Vietnam
+        "VU": "+678", // Vanuatu
+        "WF": "+681", // Wallis and Futuna
+        "WS": "+685", // Samoa
+        "XK": "+383",  //Kosovo
+        "YE": "+967", // Yemen
+        "YT": "+262", // Mayotte
+        "ZA": "+27",  // South Africa
+        "ZM": "+260", // Zambia
+        "ZW": "+263"  // Zimbabwe
     ]
     
 }

@@ -1,7 +1,7 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Apple" : {
+    "" : {
 
     },
     "calendar" : {
@@ -14,6 +14,15 @@
           }
         }
       }
+    },
+    "Continue" : {
+
+    },
+    "Enter Mobile Number" : {
+
+    },
+    "Enter OTP Code" : {
+
     },
     "Hello" : {
 
@@ -42,6 +51,9 @@
           }
         }
       }
+    },
+    "Phone number" : {
+
     },
     "profile" : {
       "extractionState" : "manual",
@@ -178,6 +190,9 @@
         }
       }
     },
+    "Select Country" : {
+
+    },
     "services" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -188,6 +203,9 @@
           }
         }
       }
+    },
+    "Verify" : {
+
     }
   },
   "version" : "1.0"
