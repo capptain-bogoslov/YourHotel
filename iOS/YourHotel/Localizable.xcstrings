@@ -66,6 +66,17 @@
         }
       }
     },
+    "profile_choose_authentication" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose your authentication method"
+          }
+        }
+      }
+    },
     "profile_complete_registration" : {
       "extractionState" : "manual",
       "localizations" : {

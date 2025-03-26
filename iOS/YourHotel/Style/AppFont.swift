@@ -14,7 +14,7 @@ extension Font {
         case displayLarge
         case displayMedium
         case displaySmall
-        case headinleLarge
+        case headingLarge
         case headingMedium
         case headingSmall
         case titleLarge
@@ -38,7 +38,7 @@ extension Font {
             return Font.system(size: 28, weight: .bold)
         case .displaySmall:
             return Font.system(size: 22, weight: .bold)
-        case .headinleLarge:
+        case .headingLarge:
             return Font.system(size: 20, weight: .bold)
         case .headingMedium:
             return Font.system(size: 17, weight: .bold)

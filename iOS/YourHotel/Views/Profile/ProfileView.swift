@@ -23,7 +23,7 @@ struct ProfileView: View {
             // Regular expression to find numbers
         let pattern = "\\b\\d+\\b"
         if let range = attributedString.range(of: pattern, options: .regularExpression) {
-            attributedString[range].foregroundColor = .primary
+            attributedString[range].foregroundColor = Color.primaryColor
             attributedString[range].font = .boldSystemFont(ofSize: 22)
         }
         
@@ -64,9 +64,22 @@ struct ProfileView: View {
 //                    CountryPhoneInputView()
                     
                     Text(getRoomNumberAttributed(roomNumber: code))
-                        .applyFont(font: Font.applyStyle(.titleLarge))
+                        .applyFont(font: Font.applyStyle(.headingLarge))
+                        .padding(.top, 10)
                     
-                    SegmentedPicker(selectedIndex: $selectedAuthenticationMethod, options: ["Phone", "Email"], selectedColor: .white,  backgroundColor: .primary, textColor: .white)
+                    Text("profile_choose_authentication")
+                        .applyFont(font: Font.applyStyle(.bodyMedium))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 16)
+                    
+                    SegmentedPicker(
+                        selectedIndex: $selectedAuthenticationMethod,
+                        options: ["Phone", "Email"],
+                        selectedColor: UIColor(hex: "1CA6DF") ?? .systemTeal,
+                        backgroundColor: UIColor(hex: "F0F0F0") ?? .lightGray,
+                        textColor: .black
+                        )
+                    .padding(.horizontal, 10)
                     
                     AuthenticationView(roomNumber: code)
 
@@ -84,6 +97,7 @@ struct ProfileView: View {
             .frame(height: (UIScreen.main.bounds.height * 2 / 3) + 20)
             .offset(x: 0, y: -20)
         }
+        .frame(maxWidth: .infinity)
         .sheet(isPresented: $showScanner) {
             QRCodeScannerView(scannedCode: $scannedRoom)
         }

@@ -39,5 +39,5 @@ struct CustomButton: View {
 }
 
 #Preview {
-    CustomButton(text: "Create Account", colors: [Color.tertiaryColor, Color.tertiary, Color.surface], height: 40, font: Font.applyStyle(.headinleLarge))
+    CustomButton(text: "Create Account", colors: [Color.tertiaryColor, Color.tertiary, Color.surface], height: 40, font: Font.applyStyle(.headingLarge))
 }

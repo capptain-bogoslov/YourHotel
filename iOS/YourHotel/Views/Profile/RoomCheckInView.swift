@@ -73,7 +73,7 @@ struct RoomCheckInView: View {
                 Text("profile_scan")
                     .foregroundColor(.whiteBlack)
                     .applyFont(font: Font.applyStyle(
-                        .headinleLarge))
+                        .headingLarge))
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .background(Color.blackWhite)
