@@ -60,9 +60,7 @@ struct ProfileView: View {
 //                    .padding(20)
 //                    .padding(.top, 40)
 
-                    
-//                    CountryPhoneInputView()
-                    
+                                        
                     Text(getRoomNumberAttributed(roomNumber: code))
                         .applyFont(font: Font.applyStyle(.headingLarge))
                         .padding(.top, 10)
@@ -74,7 +72,7 @@ struct ProfileView: View {
                     
                     SegmentedPicker(
                         selectedIndex: $selectedAuthenticationMethod,
-                        options: ["Phone", "Email"],
+                        options: ["profile_phone", "profile_email"],
                         selectedColor: UIColor(hex: "1CA6DF") ?? .systemTeal,
                         backgroundColor: UIColor(hex: "F0F0F0") ?? .lightGray,
                         textColor: .black
@@ -106,11 +104,6 @@ struct ProfileView: View {
     }
 }
 
-#Preview {
-    ProfileView()
-}
-
-
 struct AuthenticationView: View {
     @State var roomNumber: String
     
@@ -118,7 +111,12 @@ struct AuthenticationView: View {
         
         VStack(alignment: .leading, spacing: 0) {
             
-            CountryPhoneInputView()
+            HStack {
+                CountryPickerView()
+//                    .frame(width: 300)
+                Spacer()
+            }
+            .padding()
             
             Spacer()
         }
@@ -126,92 +124,6 @@ struct AuthenticationView: View {
         
     }
 }
-
-struct CountryPhoneInputView: View {
-    @State private var selectedCountry = Locale.current.region?.identifier ?? "US"
-    @State private var phoneNumber: String = ""
-
-    var countries: [(flag: String, code: String, dialCode: String)] {
-        Locale.Region.isoRegions.map({ $0.identifier}).compactMap { countryCode in
-            let flag = countryFlag(for: countryCode)
-            let dialCode = getDialCode(for: countryCode) ?? ""
-            return (flag, countryCode, dialCode)
-        }.sorted { $0.code < $1.code }
-    }
-
-    var selectedCountryDetails: (flag: String, code: String, dialCode: String)? {
-        countries.first(where: { $0.code == selectedCountry })
-    }
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("Enter Mobile Number")
-                .font(.title)
-                .bold()
-
-            HStack {
-                // Country Code Picker
-                Picker("Select Country", selection: $selectedCountry) {
-                    ForEach(countries, id: \.code) { country in
-                        HStack {
-                            Text("\(country.dialCode) \(country.code) \(Constants.countryDialCodes[country.code])")
-                            Text(country.dialCode).foregroundColor(.red)
-                        }
-                        .tag(country.code)
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-
-                // Phone Number Field
-                TextField("Phone number", text: $phoneNumber)
-                    .keyboardType(.numberPad)
-                    .font(.title3)
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-            }
-            .padding(.horizontal)
-
-            Button(action: {
-                print("Phone Number: \(selectedCountryDetails?.dialCode ?? "")\(phoneNumber)")
-            }) {
-                Text("Continue")
-                    .bold()
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal)
-
-        }
-        .padding()
-    }
-
-    // Convert country code to flag emoji
-    func countryFlag(for countryCode: String) -> String {
-        countryCode
-            .unicodeScalars
-            .compactMap { UnicodeScalar(127397 + $0.value) }
-            .map { String($0) }
-            .joined()
-    }
-
-    // Get dialing code from region code
-    func getDialCode(for countryCode: String) -> String? {
-        let prefix = "+\(Locale.current.localizedString(forRegionCode: countryCode) ?? "")"
-        return prefix.isEmpty ? nil : prefix
-    }
-}
-
-struct CountryPhoneInputView_Previews: PreviewProvider {
-    static var previews: some View {
-        CountryPhoneInputView()
-    }
-}
-
-
 
 struct OTPInputView: View {
     @State private var otp: [String] = Array(repeating: "", count: 6)

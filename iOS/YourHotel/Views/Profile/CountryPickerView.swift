@@ -1,0 +1,123 @@
+//
+//  CountryPhoneInputView.swift
+//  YourHotel
+//
+//  Created by Batsioulas, Theologos on 27/3/25.
+//
+
+import SwiftUI
+
+struct CountryPickerView: View {
+    @State private var selectedCountry: Country = Country.defaultCountry()
+    @State private var isSheetPresented = false
+    
+    var body: some View {
+        VStack {
+            Button(action: {
+                isSheetPresented.toggle()
+            }) {
+                HStack {
+                    Text(selectedCountry.flag)
+                    Text(selectedCountry.dialCode)
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .foregroundColor(.gray)
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
+            }
+            .sheet(isPresented: $isSheetPresented) {
+                CountrySelectionSheet(selectedCountry: $selectedCountry)
+            }
+        }
+        .padding()
+    }
+}
+
+struct CountrySelectionSheet: View {
+    @Environment(\.dismiss) var dismiss
+    @Binding var selectedCountry: Country
+    @State private var searchText: String = ""
+    
+    var filteredCountries: [Country] {
+        let lowercasedSearch = searchText.lowercased()
+        return Country.allCountries.filter { country in
+            searchText.isEmpty || country.name.lowercased().contains(lowercasedSearch)
+        }
+    }
+
+    var body: some View {
+        NavigationView {
+            List(filteredCountries) { country in
+                HStack {
+                    if selectedCountry.code == country.code {
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.blue)
+                    }
+                    Text(country.flag)
+                        .padding(.leading, selectedCountry.code == country.code ? 0 : 25)
+                    Text(country.name)
+                        .fontWeight(selectedCountry.code == country.code ? .bold : .regular)
+                    Spacer()
+                    Text(country.dialCode)
+                        .foregroundColor(.gray)
+
+                }
+                .contentShape(Rectangle()) // Makes the whole row tappable
+                .onTapGesture {
+                    selectedCountry = country
+                    dismiss()
+                }
+            }
+            .navigationTitle("Select Country")
+            .searchable(text: $searchText, prompt: "Search Country")
+        }
+    }
+}
+
+struct Country: Identifiable {
+    let id = UUID()
+    let name: String
+    let dialCode: String
+    let flag: String
+    let code: String
+    
+    static func defaultCountry() -> Country {
+        let region = Locale.current.region?.identifier ?? "US"
+        return Country.allCountries.first(where: { $0.code == region }) ?? Country.allCountries.first!
+    }
+    
+    static var allCountries: [Country] {
+        var countries = [Country]()
+        
+        for localeCode in Locale.Region.isoRegions.map({ $0.identifier }) {
+            guard
+                let name = Locale.current.localizedString(forRegionCode: localeCode),
+                let dialCode = Constants.countryDialCodes[localeCode]
+            else { continue }
+            
+            let flag = localeCode
+                .unicodeScalars
+                .map { String(UnicodeScalar(127397 + $0.value)!) }
+                .joined()
+            
+            countries.append(Country(
+                name: name,
+                dialCode: dialCode,
+                flag: flag,
+                code: localeCode
+            ))
+        }
+        
+        return countries.sorted { $0.name < $1.name }
+    }
+    
+    
+}
+
+struct CountryPickerView_Previews: PreviewProvider {
+    static var previews: some View {
+        CountryPickerView()
+    }
+}

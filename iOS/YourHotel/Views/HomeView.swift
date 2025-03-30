@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct HomeView: View {
+    @AppStorage("isDarkMode") private var isDarkMode = false
     @EnvironmentObject var auth: UserAuthModel
     @State var tabSelected: Int = 1
     let minDragTranslationForSwipe: CGFloat = 50
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
-
 
 
     var body: some View {
@@ -127,6 +127,7 @@ struct HomeView: View {
 //            .toolbarBackground(Color.secondaryColor, for: .tabBar)
             .toolbarBackground(.visible, for: .tabBar)
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
         .tint(Color.primaryColor)
         .onAppear {
 //            Task {
