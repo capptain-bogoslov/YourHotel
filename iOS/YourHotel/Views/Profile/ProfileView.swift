@@ -111,12 +111,8 @@ struct AuthenticationView: View {
         
         VStack(alignment: .leading, spacing: 0) {
             
-            HStack {
-                CountryPickerView()
-//                    .frame(width: 300)
-                Spacer()
-            }
-            .padding()
+            CountryPickerView()
+                .padding(.top, 20)
             
             Spacer()
         }

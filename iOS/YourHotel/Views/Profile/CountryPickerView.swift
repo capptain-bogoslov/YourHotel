@@ -10,28 +10,70 @@ import SwiftUI
 struct CountryPickerView: View {
     @State private var selectedCountry: Country = Country.defaultCountry()
     @State private var isSheetPresented = false
+    @State private var phone: String = ""
     
     var body: some View {
+        GeometryReader { geometry in
+
         VStack {
-            Button(action: {
-                isSheetPresented.toggle()
-            }) {
-                HStack {
-                    Text(selectedCountry.flag)
-                    Text(selectedCountry.dialCode)
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Image(systemName: "chevron.down")
-                        .foregroundColor(.gray)
+            HStack {
+                Button(action: {
+                    isSheetPresented.toggle()
+                }) {
+                    HStack {
+                        Text(selectedCountry.flag)
+                        Text(selectedCountry.dialCode)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "chevron.down")
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.vertical, 20)
+                    .padding(.horizontal, 5)
+                    .frame(width: UIScreen.main.bounds.width / 3)
+                    .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
                 }
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
+                .sheet(isPresented: $isSheetPresented) {
+                    CountrySelectionSheet(selectedCountry: $selectedCountry)
+                }
+
+                TextField("Enter mobile number", text: $phone)
+                    .keyboardType(.phonePad)
+                    .padding(.vertical, 20)
+                    .padding(.horizontal, 5)
+                    .frame(maxWidth: .infinity)
+                    .background(phone.isEmpty ? Color.gray.opacity(0.1) : Color.clear)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
             }
-            .sheet(isPresented: $isSheetPresented) {
-                CountrySelectionSheet(selectedCountry: $selectedCountry)
+            .padding(.horizontal, 10)
+            
+            Button(action: {
+
+            }) {
+                Text("profile_send_code")
+                    .foregroundColor(.whiteBlack)
+                    .applyFont(font: Font.applyStyle(
+                        .headingLarge))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(Color.blackWhite)
+                    .cornerRadius(8)
             }
+            .padding(20)
+            .padding(.top, 20)
+//            .disabled(showScanner)
         }
-        .padding()
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.clear) // Ensures gesture detection
+    .contentShape(Rectangle()) // Expands tappable area
+    .onTapGesture {
+        hideKeyboard()
+    }
     }
 }
 
@@ -112,8 +154,6 @@ struct Country: Identifiable {
         
         return countries.sorted { $0.name < $1.name }
     }
-    
-    
 }
 
 struct CountryPickerView_Previews: PreviewProvider {

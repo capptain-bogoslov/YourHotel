@@ -4,16 +4,6 @@
     "" : {
 
     },
-    "%@ %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@ %3$@"
-          }
-        }
-      }
-    },
     "calendar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -25,10 +15,7 @@
         }
       }
     },
-    "Continue" : {
-
-    },
-    "Enter Mobile Number" : {
+    "Enter mobile number" : {
 
     },
     "Enter OTP Code" : {
@@ -61,9 +48,6 @@
           }
         }
       }
-    },
-    "Phone number" : {
-
     },
     "profile" : {
       "extractionState" : "manual",
@@ -162,6 +146,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scan the QR code in your room to register to our app"
+          }
+        }
+      }
+    },
+    "profile_send_code" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Code"
           }
         }
       }
