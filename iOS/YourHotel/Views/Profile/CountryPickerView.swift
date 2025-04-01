@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct CountryPickerView: View {
+    @EnvironmentObject private var auth: UserAuthModel
     @State private var selectedCountry: Country = Country.defaultCountry()
     @State private var isSheetPresented = false
     @State private var phone: String = ""
+    @State private var disableButton: Bool = true
+    @Binding  var codeSent: Bool
     
     var body: some View {
         GeometryReader { geometry in
@@ -52,7 +55,10 @@ struct CountryPickerView: View {
             .padding(.horizontal, 10)
             
             Button(action: {
-
+                disableButton = true
+                Task {
+                    self.codeSent = await auth.sendVerificationCode(phoneNumber: "\(selectedCountry.dialCode)\(phone)")
+                }
             }) {
                 Text("profile_send_code")
                     .foregroundColor(.whiteBlack)
@@ -60,13 +66,17 @@ struct CountryPickerView: View {
                         .headingLarge))
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .background(Color.blackWhite)
+                    .background(Color.blackWhite.opacity(disableButton ? 0.4 : 1.0))
                     .cornerRadius(8)
             }
             .padding(20)
             .padding(.top, 20)
-//            .disabled(showScanner)
+            .opacity(disableButton ? 0.5 : 1.0)
+            .disabled(disableButton)
         }
+    }
+    .onChange(of: phone) { newValue in
+        disableButton = newValue.count < 5
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color.clear) // Ensures gesture detection
@@ -155,9 +165,9 @@ struct Country: Identifiable {
         return countries.sorted { $0.name < $1.name }
     }
 }
-
-struct CountryPickerView_Previews: PreviewProvider {
-    static var previews: some View {
-        CountryPickerView()
-    }
-}
+//
+//struct CountryPickerView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CountryPickerView()
+//    }
+//}

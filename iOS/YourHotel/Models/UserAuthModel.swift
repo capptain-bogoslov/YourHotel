@@ -12,7 +12,7 @@ import FirebaseAuth
 class UserAuthModel: ObservableObject {
 
 
-    func sendVerificationCode(phoneNumber: String) {
+    func sendVerificationCode(phoneNumber: String) async -> Bool {
         // Enable debug mode (ONLY for testing)
         if let authSettings = Auth.auth().settings {
             authSettings.isAppVerificationDisabledForTesting = false
@@ -23,20 +23,29 @@ class UserAuthModel: ObservableObject {
         // Localize message.
         Auth.auth().languageCode = "fr";
         
-        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
-            if let error = error {
-                print("Error sending verification code: \(error.localizedDescription)")
-                return
-            }
+        do {
+            let verificationId = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber)
+            UserDefaults.standard.set(verificationId, forKey: "authVerificationID")
+            return true
+        } catch {
+            print("Error: in phone verification \(error.localizedDescription).")
+            return false
 
-            // Safely unwrap verificationID before saving
-            if let verificationID = verificationID {
-                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
-                print("Verification code sent! Verification ID saved.")
-            } else {
-                print("Error: Received nil verificationID.")
-            }
         }
+//        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
+//            if let error = error {
+//                print("Error sending verification code: \(error.localizedDescription)")
+//                return
+//            }
+//
+//            // Safely unwrap verificationID before saving
+//            if let verificationID = verificationID {
+//                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+//                print("Verification code sent! Verification ID saved.")
+//            } else {
+//                print("Error: Received nil verificationID.")
+//            }
+//        }
     }
     
     

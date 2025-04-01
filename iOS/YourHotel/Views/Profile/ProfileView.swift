@@ -106,14 +106,19 @@ struct ProfileView: View {
 
 struct AuthenticationView: View {
     @State var roomNumber: String
+    @State var codeSent: Bool = false
     
     var body: some View {
         
         VStack(alignment: .leading, spacing: 0) {
             
-            CountryPickerView()
-                .padding(.top, 20)
-            
+            if codeSent {
+                OTPInputView()
+
+            } else {
+                CountryPickerView(codeSent: $codeSent)
+                    .padding(.top, 20)
+            }
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
