@@ -129,28 +129,56 @@ struct AuthenticationView: View {
 struct OTPInputView: View {
     @State private var otp: [String] = Array(repeating: "", count: 6)
     @FocusState private var focusedField: Int?
+    @State private var otpCode: String = ""
+    var kerningSpace : CGFloat {
+        (UIScreen.main.bounds.width - 40 - 180) / 4.5
+    }
+    // screenWidth - padding - (charactes * fontSize) / characters - 1.5
+
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Enter OTP Code")
-                .font(.title)
-                .bold()
             
-            HStack(spacing: 10) {
-                ForEach(0..<6, id: \.self) { index in
-                    TextField("", text: $otp[index])
-                        .frame(width: 50, height: 50)
-                        .multilineTextAlignment(.center)
-                        .keyboardType(.numberPad)
-                        .font(.title)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: otp[index].isEmpty ? 1 : 2))
-                        .focused($focusedField, equals: index)
-                        .onChange(of: otp[index]) { newValue in
-                            handleInputChange(newValue, at: index)
-                        }
+            ZStack(alignment: .leading) {
+                // Show placeholder only when text is empty
+                if otpCode.isEmpty {
+                    Text("Enter OTP code")
+                        .foregroundColor(.gray)
+                        .font(.body)
+                        .padding(.horizontal, 20)
                 }
+
+
+                TextField("", text: $otpCode)
+                    .keyboardType(.phonePad)
+                    .padding(.vertical, 20)
+                    .padding(.horizontal, 20)
+                    .frame(maxWidth: .infinity)
+                    .textContentType(.oneTimeCode)
+                    .onChange(of: otpCode) { newValue in
+                        // Keep only digits
+                        let filtered = newValue.filter { $0.isNumber }
+                        // Limit to 6 characters
+                        if filtered.count > 6 {
+                            otpCode = String(filtered.prefix(6))
+                        } else {
+                            otpCode = filtered
+                        }
+                    }
+                    .font(.system(size: 30, weight: .bold))
+                    .kerning(kerningSpace)
+                    .background(otpCode.isEmpty ? Color.gray.opacity(0.2) :Color.gray.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .background {
+                        TextFieldOutline(
+                            bottomCornerRadius: otpCode.isEmpty ? 10 : 15,
+                            sideInset: otpCode.isEmpty ? 10 : 65
+                        )
+                        .stroke(Color.blue, lineWidth: otpCode.isEmpty ? 2 : 4)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.clear)
+                        .animation(.easeOut(duration: 1.0), value: otpCode)
+                    }
             }
             
             Button(action: verifyOTP) {
@@ -191,10 +219,4 @@ struct OTPInputView_Previews: PreviewProvider {
         OTPInputView()
     }
 }
-
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
 
