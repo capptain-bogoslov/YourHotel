@@ -14,6 +14,8 @@ struct CountryPickerView: View {
     @State private var phone: String = ""
     @State private var disableButton: Bool = true
     @Binding  var codeSent: Bool
+    @State private var buttonStatus: AnimatedButtonState = .normal
+
     
     var body: some View {
         GeometryReader { geometry in
@@ -54,25 +56,10 @@ struct CountryPickerView: View {
             }
             .padding(.horizontal, 10)
             
-            Button(action: {
-                disableButton = true
-                Task {
-                    self.codeSent = await auth.sendVerificationCode(phoneNumber: "\(selectedCountry.dialCode)\(phone)")
-                }
-            }) {
-                Text("profile_send_code")
-                    .foregroundColor(.whiteBlack)
-                    .applyFont(font: Font.applyStyle(
-                        .headingLarge))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(Color.blackWhite.opacity(disableButton ? 0.4 : 1.0))
-                    .cornerRadius(8)
-            }
-            .padding(20)
-            .padding(.top, 20)
-            .opacity(disableButton ? 0.5 : 1.0)
-            .disabled(disableButton)
+            CustomAnimatedButton(buttonStatus: $buttonStatus, buttonType: .sendCode, buttonAction: sendCode)
+                .padding(20)
+                .opacity(disableButton ? 0.4 : 1.0)
+            
         }
     }
     .onChange(of: phone) { newValue in
@@ -84,6 +71,19 @@ struct CountryPickerView: View {
     .onTapGesture {
         hideKeyboard()
     }
+    }
+    
+    func sendCode() {
+        Task {
+            let result = await auth.sendVerificationCode(phoneNumber: "\(selectedCountry.dialCode)\(phone)")
+            if result {
+                self.buttonStatus = .receiveResult
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.codeSent = result
+                }
+            }
+        }
+
     }
 }
 
@@ -165,9 +165,3 @@ struct Country: Identifiable {
         return countries.sorted { $0.name < $1.name }
     }
 }
-//
-//struct CountryPickerView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        CountryPickerView()
-//    }
-//}

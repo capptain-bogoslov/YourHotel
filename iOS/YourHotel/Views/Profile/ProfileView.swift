@@ -134,6 +134,8 @@ struct OTPInputView: View {
         (UIScreen.main.bounds.width - 40 - 180) / 4.5
     }
     // screenWidth - padding - (charactes * fontSize) / characters - 1.5
+    @State private var buttonStatus: AnimatedButtonState = .normal
+    @State private var disableButton: Bool = true
 
     
     var body: some View {
@@ -142,7 +144,7 @@ struct OTPInputView: View {
             ZStack(alignment: .leading) {
                 // Show placeholder only when text is empty
                 if otpCode.isEmpty {
-                    Text("Enter OTP code")
+                    Text("Enter OTP Code")
                         .foregroundColor(.gray)
                         .font(.body)
                         .padding(.horizontal, 20)
@@ -181,20 +183,17 @@ struct OTPInputView: View {
                     }
             }
             
-            Button(action: verifyOTP) {
-                Text("Verify")
-                    .bold()
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-            }
-            .padding(.top, 20)
+            CustomAnimatedButton(buttonStatus: $buttonStatus, buttonType: .verifyCode, buttonAction: verifyOTP)
+                .padding(20)
+                .opacity(disableButton ? 0.4 : 1.0)
+            
         }
         .padding()
         .onAppear {
             focusedField = 0
+        }
+        .onChange(of: otpCode) { newValue in
+            disableButton = newValue.count < 5
         }
     }
     
@@ -210,6 +209,9 @@ struct OTPInputView: View {
     
     private func verifyOTP() {
         let enteredOTP = otp.joined()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            self.buttonStatus = .receiveResult
+        }
         print("Entered OTP: \(enteredOTP)")
     }
 }
