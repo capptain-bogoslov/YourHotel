@@ -70,18 +70,21 @@ struct RoomCheckInView: View {
             Button(action: {
                 showScanner = true
             }) {
-                Text("profile_scan")
+
+                Label("profile_scan", systemImage: "qrcode.viewfinder")
                     .foregroundColor(.whiteBlack)
                     .applyFont(font: Font.applyStyle(
                         .headingLarge))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(Color.blackWhite)
-                    .cornerRadius(8)
+                    
             }
-            .padding(20)
-            .padding(.top, 40)
             .disabled(showScanner)
+            .frame(maxWidth: .infinity)
+            .frame(height: 50)
+            .background(Color.blackWhite)
+            .cornerRadius(8)
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
             
             Spacer()
         }

@@ -10,7 +10,15 @@ import FirebaseCore
 import FirebaseAuth
 
 class UserAuthModel: ObservableObject {
+    
+    @Published var userLoggedIn: Bool = false
 
+    init() {
+        if let user = Auth.auth().currentUser {
+            self.userLoggedIn = true
+        }
+        
+    }
 
     func sendVerificationCode(phoneNumber: String) async -> Bool {
         // Enable debug mode (ONLY for testing)
@@ -21,7 +29,7 @@ class UserAuthModel: ObservableObject {
         }
 
         // Localize message.
-        Auth.auth().languageCode = "fr";
+        Auth.auth().languageCode = Locale.current.language.languageCode?.identifier //"fr";
         
         do {
             let verificationId = try await PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber)
@@ -32,20 +40,6 @@ class UserAuthModel: ObservableObject {
             return false
 
         }
-//        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
-//            if let error = error {
-//                print("Error sending verification code: \(error.localizedDescription)")
-//                return
-//            }
-//
-//            // Safely unwrap verificationID before saving
-//            if let verificationID = verificationID {
-//                UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
-//                print("Verification code sent! Verification ID saved.")
-//            } else {
-//                print("Error: Received nil verificationID.")
-//            }
-//        }
     }
     
     
@@ -61,8 +55,19 @@ class UserAuthModel: ObservableObject {
             if let error = error {
                 print("Verification failed: \(error.localizedDescription)")
             } else {
+                self.userLoggedIn = true
                 print("User logged in successfully!")
             }
+        }
+    }
+    
+    func logOut() {
+        do {
+            try Auth.auth().signOut()
+            self.userLoggedIn = false
+            print("user signed out")
+        } catch {
+            print("Error in sign out")
         }
     }
     

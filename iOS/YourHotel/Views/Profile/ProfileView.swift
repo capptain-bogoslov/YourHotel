@@ -15,7 +15,7 @@ struct ProfileView: View {
     @State private var showScanner: Bool = false
     @State private var scannedRoom: String?
     @State private var selectedAuthenticationMethod: Int = 1
-
+    @State private var userLogged: Bool = false
     
     func getRoomNumberAttributed(roomNumber: String) -> AttributedString {
         var attributedString = AttributedString(String(format: NSLocalizedString("profile_welcome_room", comment: ""), roomNumber))
@@ -41,61 +41,84 @@ struct ProfileView: View {
             
             VStack(spacing: 10) {
                 
-                if let code = scannedRoom {
-//                    Text(code)
-//                        .font(.system(.largeTitle))
-//                    
-//                    Button(action: {
-//                        auth.sendVerificationCode(phoneNumber: "+306952221307")
-//                    }) {
-//                        Text("Send Code")
-//                            .foregroundColor(.whiteBlack)
-//                            .applyFont(font: Font.applyStyle(
-//                                .headinleLarge))
-//                            .frame(maxWidth: 150)
-//                            .frame(height: 50)
-//                            .background(Color.blackWhite)
-//                            .cornerRadius(8)
-//                    }
-//                    .padding(20)
-//                    .padding(.top, 40)
-
-                                        
-                    Text(getRoomNumberAttributed(roomNumber: code))
-                        .applyFont(font: Font.applyStyle(.headingLarge))
-                        .padding(.top, 10)
+                if !auth.userLoggedIn {
                     
-                    Text("profile_choose_authentication")
-                        .applyFont(font: Font.applyStyle(.bodyMedium))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.leading, 16)
-                    
-                    SegmentedPicker(
-                        selectedIndex: $selectedAuthenticationMethod,
-                        options: ["profile_phone", "profile_email"],
-                        selectedColor: UIColor(hex: "1CA6DF") ?? .systemTeal,
-                        backgroundColor: UIColor(hex: "F0F0F0") ?? .lightGray,
-                        textColor: .black
+                    if let code = scannedRoom {
+                        //                    Text(code)
+                        //                        .font(.system(.largeTitle))
+                        //
+                        //                    Button(action: {
+                        //                        auth.sendVerificationCode(phoneNumber: "+306952221307")
+                        //                    }) {
+                        //                        Text("Send Code")
+                        //                            .foregroundColor(.whiteBlack)
+                        //                            .applyFont(font: Font.applyStyle(
+                        //                                .headinleLarge))
+                        //                            .frame(maxWidth: 150)
+                        //                            .frame(height: 50)
+                        //                            .background(Color.blackWhite)
+                        //                            .cornerRadius(8)
+                        //                    }
+                        //                    .padding(20)
+                        //                    .padding(.top, 40)
+                        
+                        
+                        Text(getRoomNumberAttributed(roomNumber: code))
+                            .applyFont(font: Font.applyStyle(.headingLarge))
+                            .padding(.top, 10)
+                        
+                        Text("profile_choose_authentication")
+                            .applyFont(font: Font.applyStyle(.bodyMedium))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 16)
+                        
+                        SegmentedPicker(
+                            selectedIndex: $selectedAuthenticationMethod,
+                            options: ["profile_phone", "profile_email"],
+                            selectedColor: UIColor(hex: "1CA6DF") ?? .systemTeal,
+                            backgroundColor: UIColor(hex: "F0F0F0") ?? .lightGray,
+                            textColor: .black
                         )
-                    .padding(.horizontal, 10)
+                        .padding(.horizontal, 10)
+                        
+                        AuthenticationView(roomNumber: code)
+                        
+                    } else {
+                        RoomCheckInView(showScanner: $showScanner)
+                    }
                     
-                    AuthenticationView(roomNumber: code)
-
                 } else {
-                    RoomCheckInView(showScanner: $showScanner)
+                    
+                    VStack {
+                        Text("Logged in")
+                            .font(.headline)
+                        
+                        Button {
+                            auth.logOut()
+                        } label: {
+                            Text("Log out")
+                                .frame(height: 50)
+                                .background(Color.blackWhite)
+                                .cornerRadius(8)
+                                .padding()
+                        }
+
+                    }
+                    
                 }
-                
                 
             }
             .background {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.whiteBlack)
             }
-            //            .background(.red)
             .frame(height: (UIScreen.main.bounds.height * 2 / 3) + 20)
             .offset(x: 0, y: -20)
         }
         .frame(maxWidth: .infinity)
+        .onChange(of: auth.userLoggedIn) { value in
+            self.userLogged = value
+        }
         .sheet(isPresented: $showScanner) {
             QRCodeScannerView(scannedCode: $scannedRoom)
         }
@@ -127,6 +150,7 @@ struct AuthenticationView: View {
 }
 
 struct OTPInputView: View {
+    @EnvironmentObject private var auth: UserAuthModel
     @State private var otp: [String] = Array(repeating: "", count: 6)
     @FocusState private var focusedField: Int?
     @State private var otpCode: String = ""
@@ -208,11 +232,12 @@ struct OTPInputView: View {
     }
     
     private func verifyOTP() {
-        let enteredOTP = otp.joined()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+//        let enteredOTP = otp.joined()
+        auth.verifyOTP(otpCode: self.otpCode)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.buttonStatus = .receiveResult
         }
-        print("Entered OTP: \(enteredOTP)")
+        print("Entered OTP: \(otpCode)")
     }
 }
 
