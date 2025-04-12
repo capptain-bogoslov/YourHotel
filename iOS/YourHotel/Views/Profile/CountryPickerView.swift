@@ -59,6 +59,7 @@ struct CountryPickerView: View {
             CustomAnimatedButton(buttonStatus: $buttonStatus, buttonType: .sendCode, buttonAction: sendCode)
                 .padding(20)
                 .opacity(disableButton ? 0.4 : 1.0)
+                .disabled(disableButton)
             
         }
     }

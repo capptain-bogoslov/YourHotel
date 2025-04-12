@@ -37,6 +37,7 @@ struct TextFieldOutline: Shape {
     }
     
     func path(in rect: CGRect) -> Path {
+        //style #1
 //        Path { path in
 //            path.move(to: CGPoint(x: rect.minX, y: rect.maxY - sideInset))
 //            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - bottomCornerRadius))
@@ -52,6 +53,7 @@ struct TextFieldOutline: Shape {
 //            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - sideInset))
 //        }
         
+        //style #2
         Path { path in
             path.move(to: CGPoint(x: rect.minX, y: rect.maxY - bottomCornerRadius))
             path.addQuadCurve(
@@ -64,7 +66,6 @@ struct TextFieldOutline: Shape {
                 control: CGPoint(x: rect.maxX, y: rect.maxY)
             )
             path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - sideInset))
-            
         }
     }
     

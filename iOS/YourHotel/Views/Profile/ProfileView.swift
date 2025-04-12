@@ -10,7 +10,6 @@ import SwiftUI
 struct ProfileView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     @EnvironmentObject private var auth: UserAuthModel
-    //    @State private var selectedTab = 1
     @State private var isBeating = false
     @State private var showScanner: Bool = false
     @State private var scannedRoom: String?
@@ -19,8 +18,8 @@ struct ProfileView: View {
     
     func getRoomNumberAttributed(roomNumber: String) -> AttributedString {
         var attributedString = AttributedString(String(format: NSLocalizedString("profile_welcome_room", comment: ""), roomNumber))
-            
-            // Regular expression to find numbers
+        
+        // Regular expression to find numbers
         let pattern = "\\b\\d+\\b"
         if let range = attributedString.range(of: pattern, options: .regularExpression) {
             attributedString[range].foregroundColor = Color.primaryColor
@@ -44,24 +43,6 @@ struct ProfileView: View {
                 if !auth.userLoggedIn {
                     
                     if let code = scannedRoom {
-                        //                    Text(code)
-                        //                        .font(.system(.largeTitle))
-                        //
-                        //                    Button(action: {
-                        //                        auth.sendVerificationCode(phoneNumber: "+306952221307")
-                        //                    }) {
-                        //                        Text("Send Code")
-                        //                            .foregroundColor(.whiteBlack)
-                        //                            .applyFont(font: Font.applyStyle(
-                        //                                .headinleLarge))
-                        //                            .frame(maxWidth: 150)
-                        //                            .frame(height: 50)
-                        //                            .background(Color.blackWhite)
-                        //                            .cornerRadius(8)
-                        //                    }
-                        //                    .padding(20)
-                        //                    .padding(.top, 40)
-                        
                         
                         Text(getRoomNumberAttributed(roomNumber: code))
                             .applyFont(font: Font.applyStyle(.headingLarge))
@@ -81,7 +62,11 @@ struct ProfileView: View {
                         )
                         .padding(.horizontal, 10)
                         
-                        AuthenticationView(roomNumber: code)
+                        if selectedAuthenticationMethod == 0 {
+                            AuthenticationView(roomNumber: code)
+                        } else {
+                            Spacer()
+                        }
                         
                     } else {
                         RoomCheckInView(showScanner: $showScanner)
@@ -102,7 +87,7 @@ struct ProfileView: View {
                                 .cornerRadius(8)
                                 .padding()
                         }
-
+                        
                     }
                     
                 }
@@ -137,7 +122,7 @@ struct AuthenticationView: View {
             
             if codeSent {
                 OTPInputView()
-
+                
             } else {
                 CountryPickerView(codeSent: $codeSent)
                     .padding(.top, 20)
@@ -151,8 +136,7 @@ struct AuthenticationView: View {
 
 struct OTPInputView: View {
     @EnvironmentObject private var auth: UserAuthModel
-    @State private var otp: [String] = Array(repeating: "", count: 6)
-    @FocusState private var focusedField: Int?
+    @FocusState private var isFocused: Bool
     @State private var otpCode: String = ""
     var kerningSpace : CGFloat {
         (UIScreen.main.bounds.width - 40 - 180) / 4.5
@@ -160,7 +144,7 @@ struct OTPInputView: View {
     // screenWidth - padding - (charactes * fontSize) / characters - 1.5
     @State private var buttonStatus: AnimatedButtonState = .normal
     @State private var disableButton: Bool = true
-
+    
     
     var body: some View {
         VStack(spacing: 20) {
@@ -173,14 +157,15 @@ struct OTPInputView: View {
                         .font(.body)
                         .padding(.horizontal, 20)
                 }
-
-
+                
+                
                 TextField("", text: $otpCode)
                     .keyboardType(.phonePad)
                     .padding(.vertical, 20)
                     .padding(.horizontal, 20)
                     .frame(maxWidth: .infinity)
                     .textContentType(.oneTimeCode)
+                    .focused($isFocused)
                     .onChange(of: otpCode) { newValue in
                         // Keep only digits
                         let filtered = newValue.filter { $0.isNumber }
@@ -195,44 +180,36 @@ struct OTPInputView: View {
                     .kerning(kerningSpace)
                     .background(otpCode.isEmpty ? Color.gray.opacity(0.2) :Color.gray.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .background {
+                    .overlay(
                         TextFieldOutline(
-                            bottomCornerRadius: otpCode.isEmpty ? 10 : 15,
-                            sideInset: otpCode.isEmpty ? 10 : 65
+                            bottomCornerRadius: otpCode.isEmpty ? 8 : 15,
+                            sideInset: otpCode.isEmpty ? 8 : 65
                         )
-                        .stroke(Color.blue, lineWidth: otpCode.isEmpty ? 2 : 4)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.clear)
-                        .animation(.easeOut(duration: 1.0), value: otpCode)
-                    }
+                        .stroke(isFocused ? Color.secondaryColor : Color.clear, lineWidth: 2)
+                        .padding(1) // Adjust to move the stroke *inside*
+                            .animation(.easeOut(duration: 1.0), value: otpCode)
+                    )
+                
             }
             
             CustomAnimatedButton(buttonStatus: $buttonStatus, buttonType: .verifyCode, buttonAction: verifyOTP)
                 .padding(20)
                 .opacity(disableButton ? 0.4 : 1.0)
+                .disabled(disableButton)
             
         }
         .padding()
-        .onAppear {
-            focusedField = 0
-        }
         .onChange(of: otpCode) { newValue in
             disableButton = newValue.count < 5
         }
+        .onTapGesture {
+            isFocused = false
+            hideKeyboard()
+        }
     }
     
-    private func handleInputChange(_ value: String, at index: Int) {
-        // Allow only a single character and move focus to the next field
-        if value.count > 1 {
-            otp[index] = String(value.prefix(1))
-        }
-        if !value.isEmpty && index < 5 {
-            focusedField = index + 1
-        }
-    }
     
     private func verifyOTP() {
-//        let enteredOTP = otp.joined()
         auth.verifyOTP(otpCode: self.otpCode)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.buttonStatus = .receiveResult

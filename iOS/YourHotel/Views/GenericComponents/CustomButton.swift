@@ -158,6 +158,7 @@ struct CustomAnimatedButton: View {
             }
             .padding()
             .cornerRadius(10)
+            .frame(maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 50)
