@@ -115,16 +115,17 @@ struct ProfileView: View {
 struct AuthenticationView: View {
     @State var roomNumber: String
     @State var codeSent: Bool = false
+    @State var phone: String = ""
     
     var body: some View {
         
         VStack(alignment: .leading, spacing: 0) {
             
             if codeSent {
-                OTPInputView()
+                OTPInputView(roomNumber: roomNumber, phoneNumber: phone)
                 
             } else {
-                CountryPickerView(codeSent: $codeSent)
+                CountryPickerView(codeSent: $codeSent, phoneComplete: $phone)
                     .padding(.top, 20)
             }
             Spacer()
@@ -144,6 +145,8 @@ struct OTPInputView: View {
     // screenWidth - padding - (charactes * fontSize) / characters - 1.5
     @State private var buttonStatus: AnimatedButtonState = .normal
     @State private var disableButton: Bool = true
+    var roomNumber: String
+    var phoneNumber: String
     
     
     var body: some View {
@@ -210,7 +213,9 @@ struct OTPInputView: View {
     
     
     private func verifyOTP() {
-        auth.verifyOTP(otpCode: self.otpCode)
+        Task {
+            await auth.verifyOTP(otpCode: self.otpCode, room: roomNumber, phone: phoneNumber)
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.buttonStatus = .receiveResult
         }
@@ -218,9 +223,9 @@ struct OTPInputView: View {
     }
 }
 
-struct OTPInputView_Previews: PreviewProvider {
-    static var previews: some View {
-        OTPInputView()
-    }
-}
+//struct OTPInputView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        OTPInputView()
+//    }
+//}
 

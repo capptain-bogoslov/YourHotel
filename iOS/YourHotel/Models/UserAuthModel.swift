@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseCore
 import FirebaseAuth
+import FirebaseFirestore
 
 class UserAuthModel: ObservableObject {
     
@@ -43,7 +44,7 @@ class UserAuthModel: ObservableObject {
     }
     
     
-    func verifyOTP(otpCode: String) {
+    func verifyOTP(otpCode: String, room: String, phone: String) async {
         guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
             print("No verification ID found.")
             return
@@ -51,18 +52,43 @@ class UserAuthModel: ObservableObject {
 
         let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: otpCode)
 
-        Auth.auth().signIn(with: credential) { authResult, error in
-            if let error = error {
-                print("Verification failed: \(error.localizedDescription)")
-            } else {
-                self.userLoggedIn = true
-                print("User logged in successfully!")
-            }
+        do {
+            //TODO: retrieve result to get additional user info
+            try await Auth.auth().signIn(with: credential)
+            
+            await addUserInFirestore(phone: phone, room: room)
+            self.userLoggedIn = true
+        } catch {
+            print("error: \(error)")
         }
     }
     
-    func addUserInFirestore() {
+    //add user in firestore
+    func addUserInFirestore(phone: String? = nil, email: String? = nil, room: String) async {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            self.userLoggedIn = false
+            return }
         
+        //get user fcm token
+        let fcmToken = UserDefaults.standard.string(forKey: "FCMToken") ?? ""
+        
+        let db = Firestore.firestore()
+
+        //add user in table "users"
+        do {
+            try await db.collection("users").document(userId).setData([
+                "FCMToken" : fcmToken,
+                "phone": phone ?? "",
+                "email" : email ?? "",
+                "authentication_method" : phone == nil ? "email" : "phone",
+                "date_created" : DateHandler.shared.getDateFromDate(date: Date.now, format: "dd/MM/yyyy"),
+                "room" : room
+            ])
+        
+            //add username in table "usernames"
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
     }
     
     func logOut() {
