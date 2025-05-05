@@ -61,6 +61,10 @@ class UserAuthModel: ObservableObject {
         }
     }
     
+    func addUserInFirestore() {
+        
+    }
+    
     func logOut() {
         do {
             try Auth.auth().signOut()
