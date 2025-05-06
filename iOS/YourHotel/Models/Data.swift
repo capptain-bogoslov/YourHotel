@@ -25,3 +25,20 @@ struct User: Codable {
         case room
     }
 }
+
+
+enum CustomError: Error, LocalizedError {
+    
+    case genericError
+    case userNotFound
+    
+    var localizedDescription: String {
+        switch self {
+        case .genericError:
+            return "Something went wrong"
+        case .userNotFound:
+            return "User not found"
+        }
+    }
+    
+}

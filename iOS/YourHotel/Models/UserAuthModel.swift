@@ -13,6 +13,7 @@ import FirebaseFirestore
 class UserAuthModel: ObservableObject {
     
     @Published var userLoggedIn: Bool = false
+    @Published var user: User? = nil
 
     init() {
         if let user = Auth.auth().currentUser {
@@ -57,7 +58,6 @@ class UserAuthModel: ObservableObject {
             try await Auth.auth().signIn(with: credential)
             
             await addUserInFirestore(phone: phone, room: room)
-            self.userLoggedIn = true
         } catch {
             print("error: \(error)")
         }
@@ -84,8 +84,55 @@ class UserAuthModel: ObservableObject {
                 "date_created" : DateHandler.shared.getDateFromDate(date: Date.now, format: "dd/MM/yyyy"),
                 "room" : room
             ])
+
+            do {
+                self.user = try await getUserDataAsync()
+                if let user = user {
+                    self.userLoggedIn = true
+                }
+            } catch {
+                print("error: \(error.localizedDescription)")
+            }
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+    }
+    
+    //get user data from firestore
+    func getUserDataAsync() async throws -> User? {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            self.userLoggedIn = false
+            return nil
+        }
+
+        let db = Firestore.firestore()
+        do {
+            let userDocument = try await db.collection("users").document(userId).getDocument()
+            
+            let user = try userDocument.data(as: User.self)
+            return user
+        } catch {
+            throw error
+        }
+    }
+    
+    //send a request to Firestore
+    func sendRequestToFirestore(request: String) async throws {
         
-            //add username in table "usernames"
+        guard let userId = Auth.auth().currentUser?.uid, let user = self.user else {
+            throw CustomError.userNotFound
+        }
+        
+        let db = Firestore.firestore()
+        do {
+            
+            try await db.collection("requests").document(user.room).updateData([
+                "request" : request,
+                "userId" : userId,
+                "user" : user.phone.isEmpty ? user.email : user.phone,
+                "date": Timestamp(date: Date())
+            ])
+            
         } catch {
             print("error: \(error.localizedDescription)")
         }
