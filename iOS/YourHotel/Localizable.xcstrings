@@ -21,7 +21,7 @@
     "Enter OTP Code" : {
 
     },
-    "Hello" : {
+    "Enter request" : {
 
     },
     "Hello!" : {
@@ -48,6 +48,15 @@
           }
         }
       }
+    },
+    "Log out" : {
+
+    },
+    "Logged in" : {
+
+    },
+    "Not logged in" : {
+
     },
     "profile" : {
       "extractionState" : "manual",
@@ -228,10 +237,16 @@
         }
       }
     },
+    "Request Sent" : {
+
+    },
     "Search Country" : {
 
     },
     "Select Country" : {
+
+    },
+    "Send a Request" : {
 
     },
     "services" : {
@@ -245,7 +260,10 @@
         }
       }
     },
-    "Verify" : {
+    "User not received" : {
+
+    },
+    "Welcome user of room %@" : {
 
     }
   },

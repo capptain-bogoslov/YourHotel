@@ -205,18 +205,19 @@ struct HomeContent: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(.black, lineWidth: 1)
                             .opacity(0.5)
-                        
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                                .scaleEffect(2)
-                        } else {
-                            if requestSent {
-                                Text("Request Sent")
-                                    .fontWeight(.bold)
-                                    .font(.title3)
-                                    .foregroundStyle(.green)
-                            }
+                    }
+                    
+                    
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            .scaleEffect(2)
+                    } else {
+                        if requestSent {
+                            Text("Request Sent")
+                                .fontWeight(.bold)
+                                .font(.title3)
+                                .foregroundStyle(.green)
                         }
                     }
 

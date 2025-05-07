@@ -10,16 +10,31 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 
+@MainActor
 class UserAuthModel: ObservableObject {
     
     @Published var userLoggedIn: Bool = false
     @Published var user: User? = nil
 
     init() {
-        if let user = Auth.auth().currentUser {
-            self.userLoggedIn = true
-        }
         
+        Task {
+            await checkAuthentication()
+        }
+    }
+    
+    //check user authentication status and receive user data
+    func checkAuthentication() async {
+        if Auth.auth().currentUser != nil {
+            do {
+                self.user = try await getUserDataAsync()
+                if user != nil {
+                    self.userLoggedIn = true
+                }
+            } catch {
+                print("error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func sendVerificationCode(phoneNumber: String) async -> Bool {
@@ -87,7 +102,7 @@ class UserAuthModel: ObservableObject {
 
             do {
                 self.user = try await getUserDataAsync()
-                if let user = user {
+                if user != nil {
                     self.userLoggedIn = true
                 }
             } catch {
@@ -126,12 +141,14 @@ class UserAuthModel: ObservableObject {
         let db = Firestore.firestore()
         do {
             
-            try await db.collection("requests").document(user.room).updateData([
+            try await db.collection("requests").document(user.room).setData([
+                "requests": FieldValue.arrayUnion([[
                 "request" : request,
                 "userId" : userId,
                 "user" : user.phone.isEmpty ? user.email : user.phone,
                 "date": Timestamp(date: Date())
-            ])
+                ]])
+            ], merge: true)
             
         } catch {
             print("error: \(error.localizedDescription)")
