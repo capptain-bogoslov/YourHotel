@@ -8,16 +8,33 @@
 import Foundation
 import FirebaseCore
 import FirebaseAuth
+import FirebaseFirestore
 
+@MainActor
 class UserAuthModel: ObservableObject {
     
     @Published var userLoggedIn: Bool = false
+    @Published var user: User? = nil
 
     init() {
-        if let user = Auth.auth().currentUser {
-            self.userLoggedIn = true
-        }
         
+        Task {
+            await checkAuthentication()
+        }
+    }
+    
+    //check user authentication status and receive user data
+    func checkAuthentication() async {
+        if Auth.auth().currentUser != nil {
+            do {
+                self.user = try await getUserDataAsync()
+                if user != nil {
+                    self.userLoggedIn = true
+                }
+            } catch {
+                print("error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func sendVerificationCode(phoneNumber: String) async -> Bool {
@@ -43,7 +60,7 @@ class UserAuthModel: ObservableObject {
     }
     
     
-    func verifyOTP(otpCode: String) {
+    func verifyOTP(otpCode: String, room: String, phone: String) async {
         guard let verificationID = UserDefaults.standard.string(forKey: "authVerificationID") else {
             print("No verification ID found.")
             return
@@ -51,13 +68,90 @@ class UserAuthModel: ObservableObject {
 
         let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: otpCode)
 
-        Auth.auth().signIn(with: credential) { authResult, error in
-            if let error = error {
-                print("Verification failed: \(error.localizedDescription)")
-            } else {
-                self.userLoggedIn = true
-                print("User logged in successfully!")
+        do {
+            //TODO: retrieve result to get additional user info
+            try await Auth.auth().signIn(with: credential)
+            
+            await addUserInFirestore(phone: phone, room: room)
+        } catch {
+            print("error: \(error)")
+        }
+    }
+    
+    //add user in firestore
+    func addUserInFirestore(phone: String? = nil, email: String? = nil, room: String) async {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            self.userLoggedIn = false
+            return }
+        
+        //get user fcm token
+        let fcmToken = UserDefaults.standard.string(forKey: "FCMToken") ?? ""
+        
+        let db = Firestore.firestore()
+
+        //add user in table "users"
+        do {
+            try await db.collection("users").document(userId).setData([
+                "FCMToken" : fcmToken,
+                "phone": phone ?? "",
+                "email" : email ?? "",
+                "authentication_method" : phone == nil ? "email" : "phone",
+                "date_created" : DateHandler.shared.getDateFromDate(date: Date.now, format: "dd/MM/yyyy"),
+                "room" : room
+            ])
+
+            do {
+                self.user = try await getUserDataAsync()
+                if user != nil {
+                    self.userLoggedIn = true
+                }
+            } catch {
+                print("error: \(error.localizedDescription)")
             }
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+    }
+    
+    //get user data from firestore
+    func getUserDataAsync() async throws -> User? {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            self.userLoggedIn = false
+            return nil
+        }
+
+        let db = Firestore.firestore()
+        do {
+            let userDocument = try await db.collection("users").document(userId).getDocument()
+            
+            let user = try userDocument.data(as: User.self)
+            return user
+        } catch {
+            throw error
+        }
+    }
+    
+    //send a request to Firestore
+    func sendRequestToFirestore(request: String) async throws {
+        
+        guard let userId = Auth.auth().currentUser?.uid, let user = self.user else {
+            throw CustomError.userNotFound
+        }
+        
+        let db = Firestore.firestore()
+        do {
+            
+            try await db.collection("requests").document(user.room).setData([
+                "requests": FieldValue.arrayUnion([[
+                "request" : request,
+                "userId" : userId,
+                "user" : user.phone.isEmpty ? user.email : user.phone,
+                "date": Timestamp(date: Date())
+                ]])
+            ], merge: true)
+            
+        } catch {
+            print("error: \(error.localizedDescription)")
         }
     }
     

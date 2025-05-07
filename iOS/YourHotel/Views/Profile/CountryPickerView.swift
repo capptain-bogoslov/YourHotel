@@ -15,7 +15,7 @@ struct CountryPickerView: View {
     @State private var disableButton: Bool = true
     @Binding  var codeSent: Bool
     @State private var buttonStatus: AnimatedButtonState = .normal
-
+    @Binding var phoneComplete: String
     
     var body: some View {
         GeometryReader { geometry in
@@ -78,6 +78,7 @@ struct CountryPickerView: View {
         Task {
             let result = await auth.sendVerificationCode(phoneNumber: "\(selectedCountry.dialCode)\(phone)")
             if result {
+                self.phoneComplete = "\(selectedCountry.dialCode)\(phone)"
                 self.buttonStatus = .receiveResult
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.codeSent = result
