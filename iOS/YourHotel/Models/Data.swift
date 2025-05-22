@@ -26,6 +26,27 @@ struct User: Codable {
     }
 }
 
+struct Room: Codable {
+    var requests: [RoomRequest]
+}
+
+struct RoomRequest: Codable, Hashable {
+    var id: String
+    var date: Date
+    var requestMessage: String
+    var userContact: String
+    var userId: String
+    
+    
+    enum CodingKeys: String, CodingKey {
+        case date
+        case requestMessage = "request"
+        case userContact = "user"
+        case userId = "userId"
+        case id = "request_id"
+    }
+}
+
 
 enum CustomError: Error, LocalizedError {
     
