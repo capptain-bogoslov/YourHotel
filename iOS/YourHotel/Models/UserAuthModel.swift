@@ -15,6 +15,7 @@ class UserAuthModel: ObservableObject {
     
     @Published var userLoggedIn: Bool = false
     @Published var user: User? = nil
+    @Published var room: Room? = nil
 
     init() {
         
@@ -128,6 +129,20 @@ class UserAuthModel: ObservableObject {
             return user
         } catch {
             throw error
+        }
+    }
+    
+    func getRoomRequests(room: String) async {
+        let db = Firestore.firestore()
+        
+        do {
+            let roomsDocument = try await db.collection("requests").document(room).getDocument()
+            if let data = roomsDocument.data() {
+                self.room = try Firestore.Decoder().decode(Room.self, from: data)
+                print("room: \(self.room?.requests.first?.userId ?? "no requests" )")
+            }
+        } catch {
+            print("error: \(error)")
         }
     }
     

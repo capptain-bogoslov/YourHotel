@@ -160,13 +160,28 @@ struct HomeContent: View {
     @State var error: String? = nil
     @State var requestSent: Bool = false
     @State var isLoading: Bool = false
+    @State var requests: [RoomRequest] = []
     
     var body: some View {
         VStack(spacing: 10) {
             if auth.userLoggedIn {
                 
                 if let user = self.user {
+                    
+                    
                     Text("Welcome user of room \(user.room)")
+                    
+                    Text("Existing Requests")
+                    
+                    ScrollView {
+                        ForEach(self.requests, id: \.self) { request in
+                            Text(request.requestMessage)
+                        }
+                        
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background(Color.primaryColor)
+                    .padding(10)
                     
                     TextField("Enter request", text: $request)
                         .padding(.vertical, 20)
@@ -233,6 +248,15 @@ struct HomeContent: View {
         .onReceive(auth.$user) { value in
             if let user = value {
                 self.user = user
+                Task {
+                    await auth.getRoomRequests(room: user.room)
+                }
+            }
+        }
+        .onReceive(auth.$room) { room in
+            if let validRoom = room {
+                self.requests = validRoom.requests
+                
             }
         }
     }
