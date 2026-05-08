@@ -7,16 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EB059DE62DC93B6B00017C8D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB059DE52DC93B6B00017C8D /* GoogleService-Info.plist */; };
 		EB4F44A92D3D626E0095CCD7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44A82D3D626E0095CCD7 /* FirebaseAnalytics */; };
 		EB4F44AB2D3D626E0095CCD7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AA2D3D626E0095CCD7 /* FirebaseAuth */; };
 		EB4F44AD2D3D626E0095CCD7 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AC2D3D626E0095CCD7 /* FirebaseCore */; };
 		EB4F44AF2D3D626E0095CCD7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AE2D3D626E0095CCD7 /* FirebaseFirestore */; };
 		EB4F44B12D3D626E0095CCD7 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44B02D3D626E0095CCD7 /* FirebaseMessaging */; };
+		EB50509C2FA6817800D86E58 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB50509B2FA6817800D86E58 /* GoogleService-Info.plist */; };
+		EB7014312FABD0C400153DA0 /* sonia_animation.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EB7014302FABD0C400153DA0 /* sonia_animation.mp4 */; };
+		EB7014342FABD74800153DA0 /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = EB7014332FABD74800153DA0 /* DotLottie */; };
+		EB7014362FABD74800153DA0 /* DotLottiePlayer in Frameworks */ = {isa = PBXBuildFile; productRef = EB7014352FABD74800153DA0 /* DotLottiePlayer */; };
+		EB7014382FABD75B00153DA0 /* sonia_animation.lottie in Resources */ = {isa = PBXBuildFile; fileRef = EB7014372FABD75B00153DA0 /* sonia_animation.lottie */; };
+		EB7FBE152FA8ED4F0099F084 /* sonia_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EB7FBE142FA8ED4E0099F084 /* sonia_video.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EB059DE52DC93B6B00017C8D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EB50509B2FA6817800D86E58 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EB7014302FABD0C400153DA0 /* sonia_animation.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sonia_animation.mp4; sourceTree = "<group>"; };
+		EB7014372FABD75B00153DA0 /* sonia_animation.lottie */ = {isa = PBXFileReference; lastKnownFileType = file; path = sonia_animation.lottie; sourceTree = "<group>"; };
+		EB7FBE142FA8ED4E0099F084 /* sonia_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sonia_video.mp4; sourceTree = "<group>"; };
 		EBA1AA182D0E42BA008DB548 /* YourHotel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourHotel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -51,6 +59,8 @@
 				EB4F44B12D3D626E0095CCD7 /* FirebaseMessaging in Frameworks */,
 				EB4F44AD2D3D626E0095CCD7 /* FirebaseCore in Frameworks */,
 				EB4F44AB2D3D626E0095CCD7 /* FirebaseAuth in Frameworks */,
+				EB7014342FABD74800153DA0 /* DotLottie in Frameworks */,
+				EB7014362FABD74800153DA0 /* DotLottiePlayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,7 +72,10 @@
 			children = (
 				EBA1AA1A2D0E42BA008DB548 /* YourHotel */,
 				EBA1AA192D0E42BA008DB548 /* Products */,
-				EB059DE52DC93B6B00017C8D /* GoogleService-Info.plist */,
+				EB50509B2FA6817800D86E58 /* GoogleService-Info.plist */,
+				EB7FBE142FA8ED4E0099F084 /* sonia_video.mp4 */,
+				EB7014302FABD0C400153DA0 /* sonia_animation.mp4 */,
+				EB7014372FABD75B00153DA0 /* sonia_animation.lottie */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +112,8 @@
 				EB4F44AC2D3D626E0095CCD7 /* FirebaseCore */,
 				EB4F44AE2D3D626E0095CCD7 /* FirebaseFirestore */,
 				EB4F44B02D3D626E0095CCD7 /* FirebaseMessaging */,
+				EB7014332FABD74800153DA0 /* DotLottie */,
+				EB7014352FABD74800153DA0 /* DotLottiePlayer */,
 			);
 			productName = YourHotel;
 			productReference = EBA1AA182D0E42BA008DB548 /* YourHotel.app */;
@@ -130,6 +145,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				EB7014322FABD74800153DA0 /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EBA1AA192D0E42BA008DB548 /* Products */;
@@ -146,7 +162,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB059DE62DC93B6B00017C8D /* GoogleService-Info.plist in Resources */,
+				EB7014312FABD0C400153DA0 /* sonia_animation.mp4 in Resources */,
+				EB7014382FABD75B00153DA0 /* sonia_animation.lottie in Resources */,
+				EB7FBE152FA8ED4F0099F084 /* sonia_video.mp4 in Resources */,
+				EB50509C2FA6817800D86E58 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,6 +401,14 @@
 				minimumVersion = 11.7.0;
 			};
 		};
+		EB7014322FABD74800153DA0 /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -409,6 +436,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EB4F44A72D3D626E0095CCD7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
+		};
+		EB7014332FABD74800153DA0 /* DotLottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB7014322FABD74800153DA0 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
+			productName = DotLottie;
+		};
+		EB7014352FABD74800153DA0 /* DotLottiePlayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB7014322FABD74800153DA0 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
+			productName = DotLottiePlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
