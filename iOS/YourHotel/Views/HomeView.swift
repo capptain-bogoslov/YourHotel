@@ -16,116 +16,143 @@ struct HomeView: View {
 
 
     var body: some View {
-        TabView(selection: $tabSelected) {
-            Group {
+        NavigationStack {
+            ZStack(alignment: .topLeading) {
 
-                ZStack {
-                    HomeContent()
-                    
+                TabView(selection: $tabSelected) {
+                    Group {
+                        ZStack {
+                            HomeContent()
+                        }
+                        .tabItem {
+                            Image(systemName: "house.fill")
+                            Text("home")
+                        }
+                        .tag(0)
+                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
+                        }))
+                        .onChange(of: tabSelected) { _ in
+                            impactFeedbackGenerator.impactOccurred()
+                        }
+                        
+                        ZStack {
+                            HomeContent()
+                        }
+                        .tabItem {
+                            Image(systemName: "building.2.fill")
+                            Text("hotel")
+                        }
+                        .tag(1)
+                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
+                        }))
+                        .onChange(of: tabSelected) { _ in
+                            impactFeedbackGenerator.impactOccurred()
+                        }
+                        
+                        
+                        ZStack {
+                            HomeContent()
+                        }
+                        .tabItem {
+                            Image(systemName: "calendar")
+                            Text("calendar")
+                        }
+                        .tag(2)
+                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
+                        }))
+                        
+                        .onChange(of: tabSelected) { _ in
+                            impactFeedbackGenerator.impactOccurred()
+                        }
+                        
+                        ZStack {
+                            HomeContent()
+                        }
+                        .tabItem {
+                            Image(systemName: "fork.knife")
+                            Text("services")
+                        }
+                        .tag(3)
+                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
+                        }))
+                        .onChange(of: tabSelected) { _ in
+                            impactFeedbackGenerator.impactOccurred()
+                        }
+                        
+                        ZStack {
+                            ProfileView()
+                                .ignoresSafeArea(.all, edges: .top)
+                        }
+                        .tabItem {
+                            Image(systemName: "person.fill")
+                            Text("profile")
+                        }
+                        .tag(4)
+                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
+                        }))
+                        .onChange(of: tabSelected) { _ in
+                            impactFeedbackGenerator.impactOccurred()
+                        }
+                        
+                    }
+                    .toolbarBackground(.visible, for: .tabBar)
                 }
-//                .onTapGesture {
-//                    if self.isDrawerOpen {
-//                        self.isDrawerOpen.toggle()
-//                    }
-//                }
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("home")
-                }
-                .tag(0)
-                .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                }))
-//                                .highPriorityGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-//                                }))
-                .onChange(of: tabSelected) { _ in
-                    impactFeedbackGenerator.impactOccurred()
-                }
-                
-                ZStack {
-                    HomeContent()
-                    
-                }
-//                .onTapGesture {
-//                    if self.isDrawerOpen {
-//                        self.isDrawerOpen.toggle()
-//                    }
-//                }
-                .tabItem {
-                    Image(systemName: "building.2.fill")
-                    Text("hotel")
-                }
-                .tag(1)
-                .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                }))
-//                                .highPriorityGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-//                                }))
-                .onChange(of: tabSelected) { _ in
-                    impactFeedbackGenerator.impactOccurred()
-                }
-                
-                
-                ZStack {
-                    HomeContent()
-                }
-//                .onTapGesture {
-//                    if self.isDrawerOpen {
-//                        self.isDrawerOpen.toggle()
-//                    }
-//                }
-                .tabItem {
-                    Image(systemName: "calendar")
-                    Text("calendar")
-                }
-                .tag(2)
-                .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                }))
-
-                .onChange(of: tabSelected) { _ in
-                    impactFeedbackGenerator.impactOccurred()
-                }
-                
-                ZStack {
-                    HomeContent()
-                }
-//                .onTapGesture {
-//                    if self.isDrawerOpen {
-//                        self.isDrawerOpen.toggle()
-//                    }
-//                }
-                .tabItem {
-                    Image(systemName: "fork.knife")
-                    Text("services")
-                }
-                .tag(3)
-                .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                }))
-                .onChange(of: tabSelected) { _ in
-                    impactFeedbackGenerator.impactOccurred()
-                }
-                
-                ZStack {
-                    ProfileView()
-                        .ignoresSafeArea(.all, edges: .top)
-                }
-//                .onTapGesture {
-//                    if self.isDrawerOpen {
-//                        self.isDrawerOpen.toggle()
-//                    }
-//                }
-                .tabItem {
-                    Image(systemName: "person.fill")
-                    Text("profile")
-                }
-                .tag(4)
-                .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                }))
-                .onChange(of: tabSelected) { _ in
-                    impactFeedbackGenerator.impactOccurred()
-                }
-                
             }
-//            .toolbarBackground(Color.secondaryColor, for: .tabBar)
-            .toolbarBackground(.visible, for: .tabBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        impactFeedbackGenerator.impactOccurred()
+                        tabSelected = 0
+                    }) {
+                        
+                        Image("logo_single")
+                            .resizable()
+                            .renderingMode(.template)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
+                            .foregroundColor(.primary)
+                            .padding(6)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        
+                    }) {
+                        Image(systemName: "bell")
+                            .font(.title3)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                        // 1. The Menu acts as the container
+                        Menu {
+
+                            Button(action: { print("contact us tapped") }) {
+                                Label("Contact Us", systemImage: "bubble.left")
+                            }
+                            
+                            Button(action: { print("Feedback tapped") }) {
+                                Label("Give feedback", systemImage: "star")
+                            }
+                            
+                            Button(action: { print("Privacy policy tapped") }) {
+                                Label("Privacy Policy", systemImage: "hand.raised")
+                            }
+                            
+                            Divider()
+                            
+                            Button(action: { print("About us tapped") }) {
+                                Label("About us", systemImage: "info")
+                            }
+                            
+                        } label: {
+
+                            Image(systemName: "filemenu.and.pointer.arrow")
+                                .font(.title3)
+                        }
+                    }
+            }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .tint(Color.primaryColor)
@@ -145,10 +172,6 @@ struct HomeView: View {
             tabSelected += 1
         }
     }
-}
-
-#Preview {
-    HomeView()
 }
 
 

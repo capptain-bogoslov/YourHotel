@@ -13,18 +13,14 @@
 		EB4F44AF2D3D626E0095CCD7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44AE2D3D626E0095CCD7 /* FirebaseFirestore */; };
 		EB4F44B12D3D626E0095CCD7 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = EB4F44B02D3D626E0095CCD7 /* FirebaseMessaging */; };
 		EB50509C2FA6817800D86E58 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB50509B2FA6817800D86E58 /* GoogleService-Info.plist */; };
-		EB7014312FABD0C400153DA0 /* sonia_animation.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EB7014302FABD0C400153DA0 /* sonia_animation.mp4 */; };
 		EB7014342FABD74800153DA0 /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = EB7014332FABD74800153DA0 /* DotLottie */; };
 		EB7014362FABD74800153DA0 /* DotLottiePlayer in Frameworks */ = {isa = PBXBuildFile; productRef = EB7014352FABD74800153DA0 /* DotLottiePlayer */; };
 		EB7014382FABD75B00153DA0 /* sonia_animation.lottie in Resources */ = {isa = PBXBuildFile; fileRef = EB7014372FABD75B00153DA0 /* sonia_animation.lottie */; };
-		EB7FBE152FA8ED4F0099F084 /* sonia_video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EB7FBE142FA8ED4E0099F084 /* sonia_video.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EB50509B2FA6817800D86E58 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		EB7014302FABD0C400153DA0 /* sonia_animation.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sonia_animation.mp4; sourceTree = "<group>"; };
 		EB7014372FABD75B00153DA0 /* sonia_animation.lottie */ = {isa = PBXFileReference; lastKnownFileType = file; path = sonia_animation.lottie; sourceTree = "<group>"; };
-		EB7FBE142FA8ED4E0099F084 /* sonia_video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sonia_video.mp4; sourceTree = "<group>"; };
 		EBA1AA182D0E42BA008DB548 /* YourHotel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourHotel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -73,8 +69,6 @@
 				EBA1AA1A2D0E42BA008DB548 /* YourHotel */,
 				EBA1AA192D0E42BA008DB548 /* Products */,
 				EB50509B2FA6817800D86E58 /* GoogleService-Info.plist */,
-				EB7FBE142FA8ED4E0099F084 /* sonia_video.mp4 */,
-				EB7014302FABD0C400153DA0 /* sonia_animation.mp4 */,
 				EB7014372FABD75B00153DA0 /* sonia_animation.lottie */,
 			);
 			sourceTree = "<group>";
@@ -162,9 +156,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB7014312FABD0C400153DA0 /* sonia_animation.mp4 in Resources */,
 				EB7014382FABD75B00153DA0 /* sonia_animation.lottie in Resources */,
-				EB7FBE152FA8ED4F0099F084 /* sonia_video.mp4 in Resources */,
 				EB50509C2FA6817800D86E58 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
