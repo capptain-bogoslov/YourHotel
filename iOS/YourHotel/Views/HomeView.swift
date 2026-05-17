@@ -29,8 +29,6 @@ struct HomeView: View {
                             Text("home")
                         }
                         .tag(0)
-                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                        }))
                         .onChange(of: tabSelected) { _ in
                             impactFeedbackGenerator.impactOccurred()
                         }
@@ -43,12 +41,9 @@ struct HomeView: View {
                             Text("hotel")
                         }
                         .tag(1)
-                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                        }))
                         .onChange(of: tabSelected) { _ in
                             impactFeedbackGenerator.impactOccurred()
                         }
-                        
                         
                         ZStack {
                             HomeContent(tabSelected: $tabSelected)
@@ -58,9 +53,6 @@ struct HomeView: View {
                             Text("calendar")
                         }
                         .tag(2)
-                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                        }))
-                        
                         .onChange(of: tabSelected) { _ in
                             impactFeedbackGenerator.impactOccurred()
                         }
@@ -73,8 +65,6 @@ struct HomeView: View {
                             Text("services")
                         }
                         .tag(3)
-                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                        }))
                         .onChange(of: tabSelected) { _ in
                             impactFeedbackGenerator.impactOccurred()
                         }
@@ -88,8 +78,6 @@ struct HomeView: View {
                             Text("profile")
                         }
                         .tag(4)
-                        .simultaneousGesture(DragGesture().onEnded({ handleSwipe(translation: $0.translation.width)
-                        }))
                         .onChange(of: tabSelected) { _ in
                             impactFeedbackGenerator.impactOccurred()
                         }
@@ -160,7 +148,6 @@ struct HomeView: View {
 //            Task {
 //                await auth.fetchAuthToken()
 //            }
-            
         }
     }
     
