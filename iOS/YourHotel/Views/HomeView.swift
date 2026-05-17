@@ -22,7 +22,7 @@ struct HomeView: View {
                 TabView(selection: $tabSelected) {
                     Group {
                         ZStack {
-                            HomeContent()
+                            HomeContent(tabSelected: $tabSelected)
                         }
                         .tabItem {
                             Image(systemName: "house.fill")
@@ -36,7 +36,7 @@ struct HomeView: View {
                         }
                         
                         ZStack {
-                            HomeContent()
+                            HomeContent(tabSelected: $tabSelected)
                         }
                         .tabItem {
                             Image(systemName: "building.2.fill")
@@ -51,7 +51,7 @@ struct HomeView: View {
                         
                         
                         ZStack {
-                            HomeContent()
+                            HomeContent(tabSelected: $tabSelected)
                         }
                         .tabItem {
                             Image(systemName: "calendar")
@@ -66,7 +66,7 @@ struct HomeView: View {
                         }
                         
                         ZStack {
-                            HomeContent()
+                            HomeContent(tabSelected: $tabSelected)
                         }
                         .tabItem {
                             Image(systemName: "fork.knife")
@@ -184,89 +184,126 @@ struct HomeContent: View {
     @State var requestSent: Bool = false
     @State var isLoading: Bool = false
     @State var requests: [RoomRequest] = []
+    @Binding var tabSelected: Int
     
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 0) {
             if auth.userLoggedIn {
                 
                 if let user = self.user {
                     
-                    
                     Text("Welcome user of room \(user.room)")
                     
-                    Text("Existing Requests")
-                    
-                    ScrollView {
-                        ForEach(self.requests, id: \.self) { request in
-                            Text(request.requestMessage)
-                        }
-                        
-                    }
-                    .frame(maxWidth: .infinity)
-                    .background(Color.primaryColor)
-                    .padding(10)
-                    
-                    TextField("Enter request", text: $request)
-                        .padding(.vertical, 20)
-                        .padding(.horizontal, 5)
-                        .frame(maxWidth: .infinity)
-                        .background(request.isEmpty ? Color.gray.opacity(0.1) : Color.clear)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                    
-                    Button {
-                        self.isLoading = true
-                        Task {
-                            do {
-                                try await auth.sendRequestToFirestore(request: request)
-                                self.requestSent.toggle()
-                                self.isLoading = false
-                            } catch {
-                                self.error = error.localizedDescription
-                            }
-                        }
-
-                    } label: {
-                        Text("Send a Request")
-                            .fontWeight(.heavy)
-                            .font(.title2)
-                            .padding(10)
-                    }
-                    .foregroundColor(.white)
-                    .background(LinearGradient(colors:  [Color.primaryColor, Color.tertiary], startPoint: .top, endPoint: .bottom))
-                    .cornerRadius(10)
-                    .disabled(request.isEmpty || isLoading)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.black, lineWidth: 1)
-                            .opacity(0.5)
-                    }
-                    
-                    
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                            .scaleEffect(2)
-                    } else {
-                        if requestSent {
-                            Text("Request Sent")
-                                .fontWeight(.bold)
-                                .font(.title3)
-                                .foregroundStyle(.green)
-                        }
-                    }
-
-                } else {
-                    Text("User not received")
+//                    Text("Existing Requests")
+//                    
+//                    ScrollView {
+//                        ForEach(self.requests, id: \.self) { request in
+//                            Text(request.requestMessage)
+//                        }
+//                        
+//                    }
+//                    .frame(maxWidth: .infinity)
+//                    .background(Color.primaryColor)
+//                    .padding(10)
+//                    
+//                    TextField("Enter request", text: $request)
+//                        .padding(.vertical, 20)
+//                        .padding(.horizontal, 5)
+//                        .frame(maxWidth: .infinity)
+//                        .background(request.isEmpty ? Color.gray.opacity(0.1) : Color.clear)
+//                        .clipShape(RoundedRectangle(cornerRadius: 10))
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: 10)
+//                                .stroke(Color.gray, lineWidth: 1)
+//                        )
+//                    
+//                    Button {
+//                        self.isLoading = true
+//                        Task {
+//                            do {
+//                                try await auth.sendRequestToFirestore(request: request)
+//                                self.requestSent.toggle()
+//                                self.isLoading = false
+//                            } catch {
+//                                self.error = error.localizedDescription
+//                            }
+//                        }
+//
+//                    } label: {
+//                        Text("Send a Request")
+//                            .fontWeight(.heavy)
+//                            .font(.title2)
+//                            .padding(10)
+//                    }
+//                    .foregroundColor(.white)
+//                    .background(LinearGradient(colors:  [Color.primaryColor, Color.tertiary], startPoint: .top, endPoint: .bottom))
+//                    .cornerRadius(10)
+//                    .disabled(request.isEmpty || isLoading)
+//                    .overlay {
+//                        RoundedRectangle(cornerRadius: 10)
+//                            .stroke(.black, lineWidth: 1)
+//                            .opacity(0.5)
+//                    }
+//                    
+//                    
+//                    if isLoading {
+//                        ProgressView()
+//                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+//                            .scaleEffect(2)
+//                    } else {
+//                        if requestSent {
+//                            Text("Request Sent")
+//                                .fontWeight(.bold)
+//                                .font(.title3)
+//                                .foregroundStyle(.green)
+//                        }
+//                    }
                 }
                 
                 
-            } else {
-                Text("Not logged in")
+                
+                
             }
+            ScrollView {
+                Text("Meet Sonia Hotel")
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            
+            if !auth.userLoggedIn {
+                Spacer()
+                
+                HStack {
+                    Text("Sign in to get access to exclusive services, offers and hotel information")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                                        
+                    Button {
+                        tabSelected = 4
+                    } label: {
+                        Label("Sign In", systemImage: "door.left.hand.open")
+                            .font(.body)
+                            .fontWeight(.black)
+                            .padding()
+                        
+                    }
+                    .frame(height: 40)
+                    .foregroundColor(.white)
+                    .background(LinearGradient(colors:  [Color.primaryColor, Color.surfaceVariant], startPoint: .top, endPoint: .bottom))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(.red)
+                
+                Spacer()
+            }
+            
         }
         .onReceive(auth.$user) { value in
             if let user = value {

@@ -37,9 +37,8 @@ struct SplashScreen: View {
 struct VideoSplashView: View {
     @Binding var isFinished: Bool
     
-    // 1. Initialize the animation using your local .lottie file
         private let animation = DotLottieAnimation(
-            fileName: "sonia_animation", // Do not include the ".lottie" extension here
+            fileName: "sonia_animation", 
             config: AnimationConfig(autoplay: true, loop: false)
         )
     
