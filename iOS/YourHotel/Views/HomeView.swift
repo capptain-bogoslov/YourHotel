@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     @EnvironmentObject var auth: UserAuthModel
-    @State var tabSelected: Int = 1
+    @State var tabSelected: Int = 0
     let minDragTranslationForSwipe: CGFloat = 50
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
 
@@ -34,7 +34,7 @@ struct HomeView: View {
                         }
                         
                         ZStack {
-                            HomeContent(tabSelected: $tabSelected)
+                            HotelView()
                         }
                         .tabItem {
                             Image(systemName: "building.2.fill")
@@ -247,46 +247,39 @@ struct HomeContent: View {
 //                    }
                 }
                 
-                
-                
-                
             }
             ScrollView {
-                Text("Meet Sonia Hotel")
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    Text("Meet")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    
+                    Image("logo1line")
+                        .resizable()
+                        .scaledToFit()
+                        .font(.title)
+                    
+                    Spacer()
+                    
+                    Button {
+                        tabSelected = 1
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .font(.body)
+                    }
+                }
+                .padding(.horizontal, 16)
+                
+                AsymmetricScrollView()
                 
                 Spacer()
             }
-            .padding(.horizontal, 16)
+//            .padding(.horizontal, 16)
             
             if !auth.userLoggedIn {
                 Spacer()
                 
-                HStack {
-                    Text("Sign in to get access to exclusive services, offers and hotel information")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                                        
-                    Button {
-                        tabSelected = 4
-                    } label: {
-                        Label("Sign In", systemImage: "door.left.hand.open")
-                            .font(.body)
-                            .fontWeight(.black)
-                            .padding()
-                        
-                    }
-                    .frame(height: 40)
-                    .foregroundColor(.white)
-                    .background(LinearGradient(colors:  [Color.primaryColor, Color.surfaceVariant], startPoint: .top, endPoint: .bottom))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(.red)
+                SignInPromptView(tabSelected: $tabSelected)
                 
                 Spacer()
             }
@@ -306,5 +299,127 @@ struct HomeContent: View {
                 
             }
         }
+    }
+}
+
+
+struct SignInPromptView: View {
+    
+    @Binding var tabSelected: Int
+    
+    var body: some View {
+        HStack {
+            Text("Sign in to get access to exclusive services, offers and hotel information")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                                
+            Button {
+                tabSelected = 4
+            } label: {
+                Label("Sign In", systemImage: "door.left.hand.open")
+                    .font(.body)
+                    .fontWeight(.black)
+                    .padding()
+                
+            }
+            .frame(height: 40)
+            .foregroundColor(.white)
+            .background(LinearGradient(colors:  [Color.primaryColor, Color.surfaceVariant], startPoint: .top, endPoint: .bottom))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(.red)
+    }
+}
+
+
+
+import SwiftUI
+
+struct AsymmetricScrollView: View {
+    var body: some View {
+        GeometryReader { screenGeo in
+            let screenWidth = screenGeo.size.width
+            let totalScrollWidth = screenWidth * 2
+            let totalHeight: CGFloat = 350
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 0) {
+                    
+                    ImageTileButton(description: "Our Rooms", imageName: "image1")
+                        .frame(width: totalScrollWidth * 0.20, height: totalHeight * 1.0)
+                    
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        HStack(spacing: 0) {
+                            ImageTileButton(description: "Restaurants & Bars", imageName: "image2")
+                                .frame(width: totalScrollWidth * 0.20)
+                            
+                            ImageTileButton(description: "Wellness", imageName: "image3")
+                                .frame(width: totalScrollWidth * 0.40)
+                        }
+                        .frame(height: totalHeight * 0.65)
+                        
+                        HStack(spacing: 0) {
+                            ImageTileButton(description: "Beach & Pools", imageName: "image4")
+                                .frame(width: totalScrollWidth * 0.45)
+                            
+                            ImageTileButton(description: "Events", imageName: "image5")
+                                .frame(width: totalScrollWidth * 0.15)
+                        }
+                        .frame(height: totalHeight * 0.35)
+                    }
+                    .frame(width: totalScrollWidth * 0.60, height: totalHeight)
+                    
+                    ImageTileButton(description: "Facilities & Services", imageName: "image6")
+                        .frame(width: totalScrollWidth * 0.20, height: totalHeight * 1.0)
+                }
+                .frame(width: totalScrollWidth, height: totalHeight)
+            }
+            .frame(height: totalHeight)
+        }
+        .frame(height: 400)
+    }
+}
+
+// Reusable Image Tile Component with Spacing, Image, Gradient, and Description
+struct ImageTileButton: View {
+    let description: String
+    let imageName: String // Pass your asset image name here
+    
+    var body: some View {
+        Button {
+            print("tile tapped!")
+        } label: {
+            ZStack(alignment: .bottomLeading) {
+                Image("hotel1")//imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.gray.opacity(0.3))
+                
+                LinearGradient(
+                    colors: [.black.opacity(0.85), .black.opacity(0.4), .clear],
+                    startPoint: .bottom,
+                    endPoint: .top
+                )
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    
+                    Text(description)
+                        .font(.callout)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+                }
+                .padding(12)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .padding(4)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .buttonStyle(.plain)
     }
 }
