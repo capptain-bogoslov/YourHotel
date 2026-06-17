@@ -257,7 +257,7 @@ struct HomeContent: View {
                     Image("logo1line")
                         .resizable()
                         .scaledToFit()
-                        .font(.title)
+                        .font(.title3)
                     
                     Spacer()
                     
@@ -339,6 +339,18 @@ struct SignInPromptView: View {
 import SwiftUI
 
 struct AsymmetricScrollView: View {
+    
+    enum Constants {
+        static let rooms = "https://sonia-resort.com/room-full-width-sonia-hotel/"
+        static let restaurantsBars = "https://sonia-resort.com/all-restaurants-bars/"
+        static let beachPools = "https://sonia-resort.com/all-beach-and-pools/"
+        static let wellness = "https://sonia-resort.com/all-wellness-facilities/"
+        static let events = "https://sonia-resort.com/entertainment/"
+        static let facilitiesServices = "https://sonia-resort.com/facilities-services/"
+    }
+    
+    
+    
     var body: some View {
         GeometryReader { screenGeo in
             let screenWidth = screenGeo.size.width
@@ -348,33 +360,33 @@ struct AsymmetricScrollView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 0) {
                     
-                    ImageTileButton(description: "Our Rooms", imageName: "image1")
-                        .frame(width: totalScrollWidth * 0.20, height: totalHeight * 1.0)
+                    ImageTileButton(description: "Our Rooms", imageName: "superior", height: totalHeight * 1.0, width: totalScrollWidth * 0.20, url: Constants.rooms)
+//                        .frame(width: totalScrollWidth * 0.20, height: totalHeight * 1.0)
                     
                     VStack(alignment: .leading, spacing: 0) {
                         
                         HStack(spacing: 0) {
-                            ImageTileButton(description: "Restaurants & Bars", imageName: "image2")
-                                .frame(width: totalScrollWidth * 0.20)
+                            ImageTileButton(description: "Restaurants & Bars", imageName: "aura", height: totalHeight * 0.65, width: totalScrollWidth * 0.20, url: Constants.restaurantsBars)
+//                                .frame(width: totalScrollWidth * 0.20)
                             
-                            ImageTileButton(description: "Wellness", imageName: "image3")
-                                .frame(width: totalScrollWidth * 0.40)
+                            ImageTileButton(description: "Wellness", imageName: "melia", height: totalHeight * 0.65, width: totalScrollWidth * 0.40, url: Constants.wellness)
+//                                .frame(width: totalScrollWidth * 0.40)
                         }
                         .frame(height: totalHeight * 0.65)
                         
                         HStack(spacing: 0) {
-                            ImageTileButton(description: "Beach & Pools", imageName: "image4")
-                                .frame(width: totalScrollWidth * 0.45)
+                            ImageTileButton(description: "Beach & Pools", imageName: "beach", height: totalHeight * 0.35, width: totalScrollWidth * 0.45, url: Constants.beachPools)
+//                                .frame(width: totalScrollWidth * 0.45)
                             
-                            ImageTileButton(description: "Events", imageName: "image5")
-                                .frame(width: totalScrollWidth * 0.15)
+                            ImageTileButton(description: "Events", imageName: "entertainment", height: totalHeight * 0.35, width: totalScrollWidth * 0.15, url: Constants.events)
+//                                .frame(width: totalScrollWidth * 0.15)
                         }
                         .frame(height: totalHeight * 0.35)
                     }
                     .frame(width: totalScrollWidth * 0.60, height: totalHeight)
                     
-                    ImageTileButton(description: "Facilities & Services", imageName: "image6")
-                        .frame(width: totalScrollWidth * 0.20, height: totalHeight * 1.0)
+                    ImageTileButton(description: "Facilities & Services", imageName: "services", height: totalHeight * 1.0, width: totalScrollWidth * 0.20, url: Constants.facilitiesServices)
+//                        .frame(width: totalScrollWidth * 0.20, height: totalHeight * 1.0)
                 }
                 .frame(width: totalScrollWidth, height: totalHeight)
             }
@@ -386,19 +398,26 @@ struct AsymmetricScrollView: View {
 
 // Reusable Image Tile Component with Spacing, Image, Gradient, and Description
 struct ImageTileButton: View {
+    @Environment(\.openURL) var openURL
     let description: String
     let imageName: String // Pass your asset image name here
-    
+    let height: CGFloat
+    let width: CGFloat
+    var url: String
+
     var body: some View {
         Button {
-            print("tile tapped!")
+            if let url = URL(string: url) {
+                openURL(url)
+            }
         } label: {
             ZStack(alignment: .bottomLeading) {
-                Image("hotel1")//imageName)
+                Image(imageName)
                     .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .scaledToFill()
+                    .frame(maxWidth: width - 5, maxHeight: height - 5)
                     .background(Color.gray.opacity(0.3))
+                    .clipped()
                 
                 LinearGradient(
                     colors: [.black.opacity(0.85), .black.opacity(0.4), .clear],
@@ -417,9 +436,10 @@ struct ImageTileButton: View {
                 .padding(12)
             }
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            .padding(4)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: width - 5, maxHeight: height - 5)
         }
         .buttonStyle(.plain)
+        .padding(4)
+
     }
 }
