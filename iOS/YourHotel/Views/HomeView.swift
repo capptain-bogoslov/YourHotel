@@ -11,6 +11,7 @@ struct HomeView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     @EnvironmentObject var auth: UserAuthModel
     @State var tabSelected: Int = 0
+    @State var bookRoomExpanded: Bool = false
     let minDragTranslationForSwipe: CGFloat = 50
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
 
@@ -22,7 +23,7 @@ struct HomeView: View {
                 TabView(selection: $tabSelected) {
                     Group {
                         ZStack {
-                            HomeContent(tabSelected: $tabSelected)
+                            HomeContent(tabSelected: $tabSelected, bookRoomExpanded: $bookRoomExpanded)
                         }
                         .tabItem {
                             Image(systemName: "house.fill")
@@ -46,7 +47,7 @@ struct HomeView: View {
                         }
                         
                         ZStack {
-                            HomeContent(tabSelected: $tabSelected)
+                            CalendarView(tabSelected: $tabSelected)
                         }
                         .tabItem {
                             Image(systemName: "calendar")
@@ -58,7 +59,7 @@ struct HomeView: View {
                         }
                         
                         ZStack {
-                            HomeContent(tabSelected: $tabSelected)
+                            ServicesView(tabSelected: $tabSelected, bookRoomExpanded: $bookRoomExpanded)
                         }
                         .tabItem {
                             Image(systemName: "fork.knife")
@@ -172,6 +173,7 @@ struct HomeContent: View {
     @State var isLoading: Bool = false
     @State var requests: [RoomRequest] = []
     @Binding var tabSelected: Int
+    @Binding var bookRoomExpanded: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -249,6 +251,38 @@ struct HomeContent: View {
                 
             }
             ScrollView {
+                
+                
+                VStack {
+                    Button {
+                        bookRoomExpanded = true
+                        tabSelected = 3
+                    } label: {
+                        
+                        HStack {
+                            Image(systemName: "calendar.and.person")
+                                .font(.largeTitle)
+                            
+                            Spacer()
+
+                            Text("Book a Room")
+                                .font(.title)
+                                .fontWeight(.black)
+                            Spacer()
+
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 30)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.white)
+                    .background(LinearGradient(colors:  [Color.primaryColor, Color.surfaceVariant], startPoint: .top, endPoint: .bottom))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 16)
+                
+                
                 HStack {
                     Text("Meet")
                         .font(.largeTitle)
@@ -280,6 +314,10 @@ struct HomeContent: View {
                 Spacer()
                 
                 SignInPromptView(tabSelected: $tabSelected)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(.red)
                 
                 Spacer()
             }
@@ -320,17 +358,16 @@ struct SignInPromptView: View {
                     .font(.body)
                     .fontWeight(.black)
                     .padding()
-                
             }
             .frame(height: 40)
             .foregroundColor(.white)
             .background(LinearGradient(colors:  [Color.primaryColor, Color.surfaceVariant], startPoint: .top, endPoint: .bottom))
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(.red)
+//        .frame(maxWidth: .infinity)
+//        .padding(.horizontal, 10)
+//        .padding(.vertical, 5)
+//        .background(.red)
     }
 }
 
