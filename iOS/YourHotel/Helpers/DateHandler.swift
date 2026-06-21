@@ -23,5 +23,22 @@ class DateHandler {
         
         return formatter.string(from: date)
     }
+    
+    func getFormattedDateString(format: String, from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        
+        return formatter.string(from: date)
+    }
+    
+    func getNumberOfDays(fromDate: Date, toDate: Date) -> Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: fromDate, to: toDate)
+        let daysApart = components.day ?? 0
+        return daysApart
+    }
 }
 

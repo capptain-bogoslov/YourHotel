@@ -17,8 +17,6 @@ struct ServicesView: View {
             DisclosureGroup(isExpanded: $bookRoomExpanded) {
                 DetailedHotelBookingView()
                     .frame(height: 450)
-//                    .background(LinearGradient(colors:  [Color.primaryColor, Color.surfaceVariant], startPoint: .top, endPoint: .bottom))
-
                 
             } label: {
                 HStack {
@@ -59,14 +57,16 @@ struct ServicesView: View {
 
 
 struct DetailedHotelBookingView: View {
-    // --- STATE MANAGEMENT ---
+    
+    enum Constants {
+        static let bookRoomBasicURL = "https://soniavillage.reserve-online.net/"
+    }
+    @Environment(\.openURL) var openURL
     @State private var checkInDate = Date()
     @State private var checkOutDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
-    
-    // Guest & Room Controls
-    @State private var numberOfRooms = 1  // Bounds: 1 to 5
-    @State private var numberOfAdults = 1 // Bounds: 1 to 5
-    @State private var numberOfChildren = 0 // Bounds: 0 to 4
+    @State private var numberOfRooms = 1
+    @State private var numberOfAdults = 2
+    @State private var numberOfChildren = 0
     @State private var showGuestPicker = false
 
     
@@ -115,7 +115,9 @@ struct DetailedHotelBookingView: View {
                 // --- SECTION 3: BOOKING BUTTON ---
                 Section {
                     Button {
-                        executeSearch()
+                        if let url = URL(string: buildBookRoomURL(checkInDate: checkInDate, checkOutDate: checkOutDate, rooms: numberOfRooms, adults: numberOfAdults, children: numberOfChildren)) {
+                            openURL(url)
+                        }
                     } label: {
                         HStack {
                             Spacer()
@@ -136,7 +138,7 @@ struct DetailedHotelBookingView: View {
                 adults: $numberOfAdults,
                 children: $numberOfChildren
             )
-            .presentationDetents([.medium]) // Locks sheet size to exactly half-screen height
+            .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         }
     }
@@ -151,6 +153,12 @@ struct DetailedHotelBookingView: View {
         Rooms: \(numberOfRooms)
         Party Configuration: \(numberOfAdults) Adults, \(numberOfChildren) Children
         """)
+    }
+    
+    private func buildBookRoomURL(checkInDate: Date, checkOutDate: Date, rooms: Int, adults: Int, children: Int) -> String {
+        let checkIn = DateHandler.shared.getFormattedDateString(format: "YYYY-MM-dd", from: checkInDate)
+        let numberOfDays = DateHandler.shared.getNumberOfDays(fromDate: checkInDate, toDate: checkOutDate)
+        return "\(Constants.bookRoomBasicURL)?checkin=\(checkIn)&rooms=\(rooms)&nights=\(numberOfDays)&adults=\(adults)&children=\(children)"
     }
 }
 
