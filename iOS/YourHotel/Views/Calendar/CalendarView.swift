@@ -18,6 +18,8 @@ struct CalendarView: View {
             if !auth.userLoggedIn {
                 Spacer()
                 SignInVerticalView(tabSelected: $tabSelected)
+            } else {
+                DailyGalleryView()
             }
             
             Spacer()

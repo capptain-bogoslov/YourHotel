@@ -63,7 +63,7 @@ struct DetailedHotelBookingView: View {
     }
     @Environment(\.openURL) var openURL
     @State private var checkInDate = Date()
-    @State private var checkOutDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+    @State private var checkOutDate = Date()//Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
     @State private var numberOfRooms = 1
     @State private var numberOfAdults = 2
     @State private var numberOfChildren = 0
