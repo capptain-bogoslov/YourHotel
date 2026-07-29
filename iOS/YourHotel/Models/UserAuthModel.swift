@@ -16,6 +16,7 @@ class UserAuthModel: ObservableObject {
     @Published var userLoggedIn: Bool = false
     @Published var user: User? = nil
     @Published var room: Room? = nil
+    @Published var dailyProgram: [TimelineItemObject] = []
 
     init() {
         
@@ -31,6 +32,7 @@ class UserAuthModel: ObservableObject {
                 self.user = try await getUserDataAsync()
                 if user != nil {
                     self.userLoggedIn = true
+                    await self.getDailyProgram(day: DateHandler.shared.getCurrentDayName())
                 }
             } catch {
                 print("error: \(error.localizedDescription)")
@@ -169,6 +171,39 @@ class UserAuthModel: ObservableObject {
             print("error: \(error.localizedDescription)")
         }
     }
+    
+    func getDailyProgram(day: String) async {
+        let db = Firestore.firestore()
+        
+        do {
+            let programDocument = try await db.collection("daily_program").document(day).getDocument()
+            
+            guard let data = programDocument.data() else {
+                return
+            }
+            self.dailyProgram.removeAll()
+
+            for (_, value) in data {
+                if let dict = value as? [String: Any] {
+                    do {
+                        // Convert the dictionary to JSON data
+                        let jsonData = try JSONSerialization.data(withJSONObject: dict)
+            
+                        // Decode into your struct
+                        let activityArray = try JSONDecoder().decode(TimelineItemObject.self, from: jsonData)
+                        self.dailyProgram.append(activityArray)
+                    } catch {
+                        print("Decoding error for a country leaderboard entry: \(error)")
+                    }
+                }
+            }
+            self.dailyProgram.sort { $0.startTime < $1.startTime }
+            
+        } catch {
+            print("error: \(error)")
+        }
+    }
+
     
     func logOut() {
         do {

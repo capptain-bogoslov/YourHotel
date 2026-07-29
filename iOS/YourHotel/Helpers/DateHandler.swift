@@ -40,5 +40,16 @@ class DateHandler {
         let daysApart = components.day ?? 0
         return daysApart
     }
+    
+    func getCurrentDayName() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE"
+        
+        // 🌟 Crucial: Forces the output to be in English, ignoring user device settings
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        // Returns the current day name capitalized
+        return formatter.string(from: Date())
+    }
 }
 

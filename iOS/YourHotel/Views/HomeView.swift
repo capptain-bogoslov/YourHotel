@@ -306,9 +306,28 @@ struct HomeContent: View {
                 
                 AsymmetricScrollView()
                 
+                
+                HStack {
+                    Text("Happens Now!")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        tabSelected = 2
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .font(.body)
+                    }
+                }
+                .padding(.horizontal, 16)
+                
+                CurrentActivitiesWidgetView(rawItems: auth.dailyProgram)
+                    .padding(.horizontal, 5)
+                
                 Spacer()
             }
-//            .padding(.horizontal, 16)
             
             if !auth.userLoggedIn {
                 Spacer()
@@ -328,6 +347,7 @@ struct HomeContent: View {
                 self.user = user
                 Task {
                     await auth.getRoomRequests(room: user.room)
+//                    await auth.getDailyProgram(day: DateHandler.shared.getCurrentDayName())
                 }
             }
         }
