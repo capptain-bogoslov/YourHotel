@@ -12,6 +12,7 @@ struct HomeView: View {
     @EnvironmentObject var auth: UserAuthModel
     @State var tabSelected: Int = 0
     @State var bookRoomExpanded: Bool = false
+    @State var bookSpaOpened: Bool = false
     let minDragTranslationForSwipe: CGFloat = 50
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
 
@@ -30,7 +31,7 @@ struct HomeView: View {
                             Text("home")
                         }
                         .tag(0)
-                        .onChange(of: tabSelected) { _ in
+                        .onChange(of: tabSelected) {
                             impactFeedbackGenerator.impactOccurred()
                         }
                         
@@ -42,7 +43,7 @@ struct HomeView: View {
                             Text("hotel")
                         }
                         .tag(1)
-                        .onChange(of: tabSelected) { _ in
+                        .onChange(of: tabSelected) {
                             impactFeedbackGenerator.impactOccurred()
                         }
                         
@@ -54,19 +55,19 @@ struct HomeView: View {
                             Text("calendar")
                         }
                         .tag(2)
-                        .onChange(of: tabSelected) { _ in
+                        .onChange(of: tabSelected) {
                             impactFeedbackGenerator.impactOccurred()
                         }
                         
                         ZStack {
-                            ServicesView(tabSelected: $tabSelected, bookRoomExpanded: $bookRoomExpanded)
+                            ServicesView(tabSelected: $tabSelected, bookRoomExpanded: $bookRoomExpanded, bookSpaOpened: $bookSpaOpened)
                         }
                         .tabItem {
                             Image(systemName: "fork.knife")
                             Text("services")
                         }
                         .tag(3)
-                        .onChange(of: tabSelected) { _ in
+                        .onChange(of: tabSelected) {
                             impactFeedbackGenerator.impactOccurred()
                         }
                         
@@ -79,7 +80,7 @@ struct HomeView: View {
                             Text("profile")
                         }
                         .tag(4)
-                        .onChange(of: tabSelected) { _ in
+                        .onChange(of: tabSelected) {
                             impactFeedbackGenerator.impactOccurred()
                         }
                         
@@ -306,25 +307,61 @@ struct HomeContent: View {
                 
                 AsymmetricScrollView()
                 
-                
-                HStack {
-                    Text("Happens Now!")
+                VStack {
+                    
+                    Text("Information")
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.largeTitle)
                         .fontWeight(.bold)
+                        .padding(.horizontal, 16)
                     
-                    Spacer()
+                    LargeIconHorizontalStack()
                     
-                    Button {
-                        tabSelected = 2
-                    } label: {
-                        Image(systemName: "chevron.right")
-                            .font(.body)
-                    }
                 }
-                .padding(.horizontal, 16)
+                .padding(.top, 20)
                 
-                CurrentActivitiesWidgetView(rawItems: auth.dailyProgram)
-                    .padding(.horizontal, 5)
+                if auth.userLoggedIn {
+                    
+                    HStack {
+                        Text("Happening Now!")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Button {
+                            tabSelected = 2
+                        } label: {
+                            Image(systemName: "chevron.right")
+                                .font(.body)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    CurrentActivitiesWidgetView(rawItems: auth.dailyProgram)
+                        .padding(.horizontal, 5)
+                    
+                    
+                    
+                    HStack {
+                        Text("Promotions")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Button {
+                            tabSelected = 2
+                        } label: {
+                            Image(systemName: "chevron.right")
+                                .font(.body)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 20)
+                    
+                }
+                
                 
                 Spacer()
             }

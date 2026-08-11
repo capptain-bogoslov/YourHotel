@@ -204,15 +204,14 @@ struct CurrentActivitiesWidgetView: View {
                                 .foregroundColor(.primary)
                             
                             // Label content
-                            Text(item.label)
+                            Text(item.label.capitalized)
                                 .font(.body.weight(.medium))
                                 .frame(maxWidth: .infinity)
                             
                             
                             Image(getLocationIcon(for: item.location))
                                 .resizable()
-                                .font(.body)
-
+                                .font(.caption)
                         }
                     }
                 }
