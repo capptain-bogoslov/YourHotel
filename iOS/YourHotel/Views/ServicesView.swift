@@ -61,8 +61,10 @@ struct ServicesView: View {
             if auth.userLoggedIn {
                 
                 DisclosureGroup(isExpanded: $bookSpaOpened) {
-                    DetailedHotelBookingView()
-                        .frame(height: 450)
+//                    DetailedHotelBookingView()
+//                        .frame(height: 450)
+                    SpaBookingView(roomNumber: auth.user?.room ?? "999")
+                        .frame(maxHeight: .infinity)
                     
                 } label: {
                     HStack {
