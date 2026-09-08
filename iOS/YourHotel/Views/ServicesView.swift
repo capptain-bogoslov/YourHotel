@@ -10,6 +10,7 @@ import FirebaseStorage
 
 struct ServicesView: View {
     @EnvironmentObject var auth: UserAuthModel
+    @StateObject private var viewModel = ServicesViewModel()
     @Binding var tabSelected: Int
     @Binding var bookRoomExpanded: Bool
     @Binding var bookSpaOpened: Bool
@@ -61,9 +62,7 @@ struct ServicesView: View {
             if auth.userLoggedIn {
                 
                 DisclosureGroup(isExpanded: $bookSpaOpened) {
-//                    DetailedHotelBookingView()
-//                        .frame(height: 450)
-                    SpaBookingView(roomNumber: auth.user?.room ?? "999")
+                    SpaBookingView(viewModel: viewModel, roomNumber: auth.user?.room ?? "")
                         .frame(maxHeight: .infinity)
                     
                 } label: {

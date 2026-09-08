@@ -51,5 +51,11 @@ class DateHandler {
         // Returns the current day name capitalized
         return formatter.string(from: Date())
     }
+    
+    func formatDateForFirestore(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
+    }
 }
 

@@ -6,179 +6,8 @@
 //
 
 import SwiftUI
-
-struct SpaBookingView: View {
-    @StateObject private var viewModel: ServicesViewModel
-    
-    // Grid configuration for time slots
-    private let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-
-    init(roomNumber: String) {
-        _viewModel = StateObject(wrappedValue: ServicesViewModel(roomNumber: roomNumber))
-    }
-
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                if viewModel.isLoading {
-                    ProgressView("Loading Spa Availability...")
-                } else {
-                    ScrollView {
-                        VStack(spacing: 20) {
-                            
-                            // MARK: - Room Info Header
-                            HStack {
-                                Label("Room \(viewModel.roomNumber)", systemImage: "bed.double.fill")
-                                    .font(.subheadline.bold())
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(Color.blue.opacity(0.1))
-                                    .foregroundColor(.blue)
-                                    .clipShape(Capsule())
-                                Spacer()
-                            }
-                            .padding(.horizontal)
-
-                            // MARK: - Treatment Selector (Picker / Dropdown)
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("SELECT TREATMENT")
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.secondary)
-                                
-                                Menu {
-                                    Picker("Treatment", selection: $viewModel.selectedTreatment) {
-                                        ForEach(viewModel.treatments) { treatment in
-                                            Text("\(treatment.name) (\(String(format: "$%.0f", treatment.price)))")
-                                                .tag(Optional(treatment))
-                                        }
-                                    }
-                                } label: {
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(viewModel.selectedTreatment?.name ?? "Select a treatment")
-                                                .font(.headline)
-                                                .foregroundColor(.primary)
-                                            if let price = viewModel.selectedTreatment?.price {
-                                                Text(String(format: "$%.0f • 60 mins", price))
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.secondary)
-                                            }
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.up.chevron.down")
-                                            .foregroundColor(.secondary)
-                                    }
-                                    .padding()
-                                    .background(Color(.secondarySystemGroupedBackground))
-                                    .cornerRadius(12)
-                                }
-                            }
-                            .padding(.horizontal)
-
-                            // MARK: - Date Selector
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("SELECT DATE")
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.secondary)
-
-                                DatePicker(
-                                    "Date",
-                                    selection: $viewModel.selectedDate,
-                                    in: viewModel.minDate...viewModel.maxDate,
-                                    displayedComponents: [.date]
-                                )
-                                .datePickerStyle(.graphical)
-                                .padding()
-                                .background(Color(.secondarySystemGroupedBackground))
-                                .cornerRadius(16)
-                                .onChange(of: viewModel.selectedDate) { newDate, _ in
-                                    Task {
-                                        await viewModel.fetchAndGenerateSlots(for: newDate)
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-
-                            // MARK: - Time Slot Grid
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("AVAILABLE SESSIONS")
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.secondary)
-
-                                LazyVGrid(columns: columns, spacing: 12) {
-                                    ForEach(viewModel.availableSlots) { slot in
-                                        TimeSlotCell(
-                                            slot: slot,
-                                            isSelected: viewModel.selectedSlot == slot
-                                        ) {
-                                            if !slot.isBooked {
-                                                viewModel.selectedSlot = slot
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-
-                            // MARK: - Confirm Button
-                            Button(action: {
-                                Task {
-                                    await viewModel.bookTreatment()
-                                }
-                            }) {
-                                HStack {
-                                    if viewModel.isBooking {
-                                        ProgressView().tint(.white)
-                                    } else {
-                                        Text("Confirm Booking")
-                                            .bold()
-                                    }
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(viewModel.selectedSlot == nil ? Color.gray.opacity(0.5) : Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(14)
-                            }
-                            .disabled(viewModel.selectedSlot == nil || viewModel.isBooking)
-                            .padding(.horizontal)
-                            .padding(.bottom, 24)
-                            
-                            Spacer()
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Book Spa Session")
-            .navigationBarTitleDisplayMode(.inline)
-            .task {
-                await viewModel.loadInitialData()
-            }
-            .alert("Notice", isPresented: Binding(
-                get: { viewModel.alertMessage != nil },
-                set: { _ in viewModel.alertMessage = nil }
-            )) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(viewModel.alertMessage ?? "")
-            }
-            .alert("Booking Confirmed! 🎉", isPresented: $viewModel.bookingSuccess) {
-                Button("Done", role: .cancel) {}
-            } message: {
-                Text("Your treatment is reserved for Room \(viewModel.roomNumber) on \(viewModel.selectedDate.formatted(date: .abbreviated, time: .omitted)) at \(viewModel.selectedSlot?.startTime ?? "").")
-            }
-        }
-    }
-}
+import Foundation
+import FirebaseFirestore
 
 // MARK: - Time Slot Grid Button Subview
 struct TimeSlotCell: View {
@@ -230,4 +59,208 @@ struct TimeSlotCell: View {
     private var borderColor: Color {
         isSelected ? Color.blue : Color.clear
     }
+}
+
+
+struct Treatment: Identifiable, Hashable, Codable {
+    @DocumentID var id: String?
+    let name: String
+    let durationMinutes: Int
+    let price: Int
+}
+
+struct SpaBooking: Identifiable, Codable {
+    @DocumentID var id: String?
+    let createdAt: Date
+    let date: String // Format: "YYYY-MM-DD"
+    let startTime: String // Format: "10:00"
+    let endTime: String // Format: "11:00"
+    let roomNumber: String
+    let treatmentId: String
+    let treatmentName: String
+    let status: String // "confirmed" or "unconfirmed"
+}
+
+struct TimeSlotNew: Identifiable {
+    var id: String { "\(startTime)-\(endTime)" }
+    let startTime: String
+    let endTime: String
+    
+    var label: String {
+        "\(startTime)-\(endTime)"
+    }
+}
+
+struct SpaBookingView: View {
+    @StateObject var viewModel: ServicesViewModel
+    var roomNumber: String
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    
+                    // 1. Calendar Day Selector (Today + Next 6 Days)
+                    VStack(alignment: .leading) {
+                        Text("Select Date")
+                            .font(.headline)
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
+                                ForEach(viewModel.weekDays, id: \.self) { date in
+                                    let isSelected = Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate)
+                                    
+                                    Button(action: {
+                                        viewModel.selectedDate = date
+                                    }) {
+                                        VStack(spacing: 4) {
+                                            Text(date.formatted(.dateTime.weekday(.abbreviated)))
+                                                .font(.caption)
+                                                .bold()
+                                            Text(date.formatted(.dateTime.day()))
+                                                .font(.title3)
+                                                .bold()
+                                            
+                                            if Calendar.current.isDateInToday(date) {
+                                                Text("TODAY")
+                                                    .font(.system(size: 8, weight: .bold))
+                                                    .foregroundColor(.blue)
+                                            }
+                                        }
+                                        .frame(width: 60, height: 75)
+                                        .background(isSelected ? Color.blue.opacity(0.15) : Color(.systemGray6))
+                                        .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
+                                        )
+                                    }
+                                    .padding(5)
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // 2. Treatment Picker
+                    VStack(alignment: .leading) {
+                        Text("Select Treatment")
+                            .font(.headline)
+                        
+                        Picker("Treatment", selection: $viewModel.selectedTreatment) {
+                            ForEach(viewModel.treatments) { treatment in
+                                Text("\(treatment.name) (\(treatment.durationMinutes)m - $\(treatment.price))")
+                                    .tag(Optional(treatment))
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                    .padding(.horizontal)
+                    
+                    // 3. Time Slots Grid
+                    VStack(alignment: .leading) {
+                        Text("Available Sessions")
+                            .font(.headline)
+                        
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 10) {
+                            ForEach(viewModel.availableTimeSlots) { slot in
+                                let isConfirmed = viewModel.isSlotConfirmed(slot)
+                                let isSelected = viewModel.selectedTimeSlot?.id == slot.id
+                                
+                                Button(action: {
+                                    if !isConfirmed {
+                                        viewModel.selectedTimeSlot = slot
+                                    }
+                                }) {
+                                    VStack(spacing: 4) {
+                                        Text(slot.label)
+                                            .font(.caption)
+                                            .bold()
+                                        
+                                        Text(isConfirmed ? "Unavailable" : "Available")
+                                            .font(.system(size: 9))
+                                            .foregroundColor(isConfirmed ? .red : .green)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        isConfirmed ? Color.red.opacity(0.1) :
+                                            (isSelected ? Color.blue.opacity(0.15) : Color(.systemGray6))
+                                    )
+                                    .cornerRadius(8)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(
+                                                isConfirmed ? Color.red.opacity(0.3) :
+                                                    (isSelected ? Color.blue : Color.clear),
+                                                lineWidth: 2
+                                            )
+                                    )
+                                }
+                                .disabled(isConfirmed)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    // 4. Room Number Input & Submit
+                    VStack(alignment: .leading, spacing: 12) {
+
+                        HStack {
+                            Label("Room \(roomNumber)", systemImage: "bed.double.fill")
+                                .font(.subheadline.bold())
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundColor(.blue)
+                                .clipShape(Capsule())
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        
+                        Button(action: {
+                            Task {
+                                await viewModel.createBooking(roomNumber: roomNumber)
+                            }
+                        }) {
+                            HStack {
+                                Spacer()
+                                if viewModel.isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                } else {
+                                    Text("Book Spa Session")
+                                        .bold()
+                                }
+                                Spacer()
+                            }
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
+                        .disabled(viewModel.isLoading)
+                    }
+                    .padding(.horizontal)
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Book Spa")
+            .alert(item: Binding<AlertItem?>(
+                get: { viewModel.alertMessage != nil ? AlertItem(message: viewModel.alertMessage!) : nil },
+                set: { _ in viewModel.alertMessage = nil }
+            )) { item in
+                Alert(title: Text("Booking Status"), message: Text(item.message), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+}
+
+struct AlertItem: Identifiable {
+    let id = UUID()
+    let message: String
 }

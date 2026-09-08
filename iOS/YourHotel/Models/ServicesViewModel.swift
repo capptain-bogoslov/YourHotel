@@ -8,14 +8,10 @@
 
 import SwiftUI
 import FirebaseFirestore
+import Foundation
+import Combine
 
 // MARK: - Models
-struct SpaTreatment: Identifiable, Hashable {
-    let id: String
-    let name: String
-    let durationMinutes: Int
-    let price: Double
-}
 
 struct TimeSlot: Identifiable, Hashable {
     let id = UUID()
@@ -28,163 +24,122 @@ struct TimeSlot: Identifiable, Hashable {
     }
 }
 
-// MARK: - View Model
 @MainActor
-final class ServicesViewModel: ObservableObject {
-    @Published var treatments: [SpaTreatment] = []
-    @Published var selectedTreatment: SpaTreatment?
-    @Published var selectedDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
-    @Published var selectedSlot: TimeSlot?
-    @Published var availableSlots: [TimeSlot] = []
-    
-    @Published var minDate: Date = Date()
-    @Published var maxDate: Date = Date()
-    
-    @Published var isLoading = false
-    @Published var isBooking = false
+class ServicesViewModel: ObservableObject {
+    @Published var selectedDate: Date = Date() {
+        didSet {
+            listenToBookings()
+        }
+    }
+    @Published var treatments: [Treatment] = []
+    @Published var selectedTreatment: Treatment?
+    @Published var selectedTimeSlot: TimeSlotNew?
+    @Published var confirmedBookings: [SpaBooking] = []
+    @Published var isLoading: Bool = false
     @Published var alertMessage: String?
-    @Published var bookingSuccess = false
-
-    private let db = Firestore.firestore()
-    private var openingHour: Int = 10  // Default fallback
-    private var closingHour: Int = 18  // Default fallback
     
-    // Pass the room number from your user session
-    let roomNumber: String
-
-    init(roomNumber: String) {
-        self.roomNumber = roomNumber
+    private let db = Firestore.firestore()
+    private var listener: ListenerRegistration?
+    
+    // Rolling 7-day options (Today + next 6 days)
+    var weekDays: [Date] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: today) }
     }
-
-    // MARK: - Initial Setup
-    func loadInitialData() async {
-        isLoading = true
-        await fetchBookingRules()
-        await fetchTreatments()
-        await fetchAndGenerateSlots(for: selectedDate)
-        isLoading = false
+    
+    // Available hourly time slots (10:00 to 20:00)
+    var availableTimeSlots: [TimeSlotNew] {
+        var slots: [TimeSlotNew] = []
+        for hour in 10..<20 {
+            let start = String(format: "%02d:00", hour)
+            let end = String(format: "%02d:00", hour + 1)
+            slots.append(TimeSlotNew(startTime: start, endTime: end))
+        }
+        return slots;
     }
-
-    // MARK: - 1. Fetch Rules (Opening Hours & Booking Window)
-    private func fetchBookingRules() async {
-        do {
-            let snapshot = try await db.collection("spa_settings").document("config").getDocument()
-            if let data = snapshot.data() {
-                self.openingHour = data["openingHour"] as? Int ?? 10
-                self.closingHour = data["closingHour"] as? Int ?? 18
-                
-                let minDaysAhead = data["minDaysAhead"] as? Int ?? 1
-                let maxDaysAhead = data["maxDaysAhead"] as? Int ?? 14
-                
-                let calendar = Calendar.current
-                self.minDate = calendar.date(byAdding: .day, value: minDaysAhead, to: Date()) ?? Date()
-                self.maxDate = calendar.date(byAdding: .day, value: maxDaysAhead, to: Date()) ?? Date()
-                
-                // Ensure selectedDate falls within valid range
-                if self.selectedDate < self.minDate {
-                    self.selectedDate = self.minDate
+    
+    var selectedDateFormattedString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: selectedDate)
+    }
+    
+    init() {
+        fetchTreatments()
+        listenToBookings()
+    }
+    
+    deinit {
+        listener?.remove()
+    }
+    
+    // Check if a time slot is booked with "confirmed" status
+    func isSlotConfirmed(_ slot: TimeSlotNew) -> Bool {
+        confirmedBookings.contains { booking in
+            booking.startTime == slot.startTime && booking.status.lowercased() == "confirmed"
+        }
+    }
+    
+    // Fetch Treatments dropdown items from `spa_treatments`
+    func fetchTreatments() {
+        db.collection("spa_treatments").getDocuments { [weak self] snapshot, error in
+            guard let documents = snapshot?.documents, error == nil else { return }
+            DispatchQueue.main.async {
+                self?.treatments = documents.compactMap { try? $0.data(as: Treatment.self) }
+                if self?.selectedTreatment == nil {
+                    self?.selectedTreatment = self?.treatments.first
                 }
             }
-        } catch {
-            print("Error fetching rules, using defaults: \(error.localizedDescription)")
-            let calendar = Calendar.current
-            self.minDate = calendar.date(byAdding: .day, value: 1, to: Date())!
-            self.maxDate = calendar.date(byAdding: .day, value: 14, to: Date())!
         }
     }
-
-    // MARK: - 2. Fetch Treatments Dropdown
-    private func fetchTreatments() async {
-        do {
-            let snapshot = try await db.collection("spa_treatments").getDocuments()
-            self.treatments = snapshot.documents.compactMap { doc in
-                let data = doc.data()
-                guard let name = data["name"] as? String else { return nil }
-                let duration = data["durationMinutes"] as? Int ?? 60
-                let price = data["price"] as? Double ?? 0.0
-                return SpaTreatment(id: doc.documentID, name: name, durationMinutes: duration, price: price)
-            }
-            if let first = self.treatments.first {
-                self.selectedTreatment = first
-            }
-        } catch {
-            self.alertMessage = "Failed to load treatments: \(error.localizedDescription)"
-        }
-    }
-
-    // MARK: - 3. Fetch Bookings & Build Slots for Selected Date
-    func fetchAndGenerateSlots(for date: Date) async {
-        self.selectedSlot = nil
-        let dateString = formatDateForFirestore(date)
+    
+    // Real-time listener for bookings on selected date
+    func listenToBookings() {
+        listener?.remove()
         
-        do {
-            // Fetch existing bookings for this date
-            let snapshot = try await db.collection("spa_bookings")
-                .whereField("date", isEqualTo: dateString)
-                .getDocuments()
-            
-            let bookedHours = snapshot.documents.compactMap { doc -> String? in
-                return doc.data()["startTime"] as? String
+        let dateStr = selectedDateFormattedString
+        listener = db.collection("spa_bookings")
+            .whereField("date", isEqualTo: dateStr)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let documents = snapshot?.documents, error == nil else { return }
+                DispatchQueue.main.async {
+                    let allBookings = documents.compactMap { try? $0.data(as: SpaBooking.self) }
+                    // Filter to strictly confirmed bookings for availability status
+                    self?.confirmedBookings = allBookings.filter { $0.status.lowercased() == "confirmed" }
+                }
             }
-            
-            // Generate 1-hour slots from openingHour to closingHour
-            var slots: [TimeSlot] = []
-            for hour in openingHour..<closingHour {
-                let startStr = String(format: "%02d:00", hour)
-                let endStr = String(format: "%02d:00", hour + 1)
-                
-                let isBooked = bookedHours.contains(startStr)
-                slots.append(TimeSlot(startTime: startStr, endTime: endStr, isBooked: isBooked))
-            }
-            
-            self.availableSlots = slots
-        } catch {
-            self.alertMessage = "Failed to load availability: \(error.localizedDescription)"
-        }
     }
-
-    // MARK: - 4. Commit Booking to Firestore
-    func bookTreatment() async {
-        guard let treatment = selectedTreatment else {
-            alertMessage = "Please select a treatment."
-            return
-        }
-        guard let slot = selectedSlot else {
-            alertMessage = "Please select a time slot."
+    
+    // Create new booking with status "unconfirmed"
+    func createBooking(roomNumber: String) async {
+        guard let treatment = selectedTreatment,
+              let slot = selectedTimeSlot,
+              !roomNumber.trimmingCharacters(in: .whitespaces).isEmpty else {
+            alertMessage = "Please select treatment, time slot, and enter room number."
             return
         }
         
-        isBooking = true
-        let dateString = formatDateForFirestore(selectedDate)
+        isLoading = true
+        defer { isLoading = false }
         
-        let bookingData: [String: Any] = [
-            "roomNumber": roomNumber,
-            "treatmentId": treatment.id,
-            "treatmentName": treatment.name,
-            "date": dateString,
+        let newBookingData: [String: Any] = [
+            "createdAt": FieldValue.serverTimestamp(),
+            "date": selectedDateFormattedString,
             "startTime": slot.startTime,
             "endTime": slot.endTime,
-            "createdAt": FieldValue.serverTimestamp()
+            "roomNumber": roomNumber,
+            "treatmentId": treatment.id ?? "",
+            "treatmentName": treatment.name,
+            "status": "unconfirmed"
         ]
         
         do {
-            // Save to Firestore
-            try await db.collection("spa_bookings").addDocument(data: bookingData)
-            
-            // Refresh slots to mark as booked locally
-            await fetchAndGenerateSlots(for: selectedDate)
-            
-            self.bookingSuccess = true
+            try await db.collection("spa_bookings").addDocument(data: newBookingData)
+            alertMessage = "Booking requested! Status: Unconfirmed"
+            selectedTimeSlot = nil
         } catch {
-            self.alertMessage = "Failed to complete booking: \(error.localizedDescription)"
+            alertMessage = "Error saving booking: \(error.localizedDescription)"
         }
-        
-        isBooking = false
-    }
-
-    private func formatDateForFirestore(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
     }
 }
