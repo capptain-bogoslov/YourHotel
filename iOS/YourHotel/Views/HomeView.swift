@@ -360,6 +360,9 @@ struct HomeContent: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 20)
                     
+                    PromotionsView()
+                        .padding(.horizontal, 5)
+                    
                 }
                 
                 
