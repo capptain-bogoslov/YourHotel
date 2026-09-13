@@ -37,6 +37,7 @@ class ServicesViewModel: ObservableObject {
     @Published var confirmedBookings: [SpaBooking] = []
     @Published var isLoading: Bool = false
     @Published var alertMessage: String?
+    @Published var showAlert: Bool = false
     
     private let db = Firestore.firestore()
     private var listener: ListenerRegistration?
@@ -63,6 +64,11 @@ class ServicesViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: selectedDate)
+    }
+    
+    func showAlertMessage(message: String) {
+        alertMessage = message
+        showAlert = true
     }
     
     init() {
@@ -116,7 +122,7 @@ class ServicesViewModel: ObservableObject {
         guard let treatment = selectedTreatment,
               let slot = selectedTimeSlot,
               !roomNumber.trimmingCharacters(in: .whitespaces).isEmpty else {
-            alertMessage = "Please select treatment, time slot, and enter room number."
+            showAlertMessage(message: "Please select treatment, time slot, and enter room number.")
             return
         }
         
@@ -136,10 +142,10 @@ class ServicesViewModel: ObservableObject {
         
         do {
             try await db.collection("spa_bookings").addDocument(data: newBookingData)
-            alertMessage = "Booking requested! Status: Unconfirmed"
+            showAlertMessage(message: "Booking requested! Status: Unconfirmed")
             selectedTimeSlot = nil
         } catch {
-            alertMessage = "Error saving booking: \(error.localizedDescription)"
+            showAlertMessage(message: "Error saving booking: \(error.localizedDescription)")
         }
     }
 }

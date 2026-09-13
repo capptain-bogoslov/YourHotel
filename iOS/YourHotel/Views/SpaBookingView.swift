@@ -250,17 +250,13 @@ struct SpaBookingView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Book Spa")
-            .alert(item: Binding<AlertItem?>(
-                get: { viewModel.alertMessage != nil ? AlertItem(message: viewModel.alertMessage!) : nil },
-                set: { _ in viewModel.alertMessage = nil }
-            )) { item in
-                Alert(title: Text("Booking Status"), message: Text(item.message), dismissButton: .default(Text("OK")))
+            .alert(isPresented: $viewModel.showAlert) {
+                Alert(
+                    title: Text("Booking Status"),
+                    message: Text(viewModel.alertMessage ?? ""),
+                    dismissButton: .default(Text("OK"))
+                )
             }
         }
     }
-}
-
-struct AlertItem: Identifiable {
-    let id = UUID()
-    let message: String
 }
