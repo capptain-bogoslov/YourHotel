@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     @EnvironmentObject var auth: UserAuthModel
+    @EnvironmentObject var notificationsManager: NotificationsManager
     @State var tabSelected: Int = 0
     @State var bookRoomExpanded: Bool = false
     @State var bookSpaOpened: Bool = false
@@ -111,6 +112,7 @@ struct HomeView: View {
                     }) {
                         Image(systemName: "bell")
                             .font(.title3)
+                            .badge(2)
                     }
                 }
                 
@@ -150,6 +152,9 @@ struct HomeView: View {
 //            Task {
 //                await auth.fetchAuthToken()
 //            }
+            //Get notifications
+//            notificationsManager.initialize(userId: "user-123")
+            
         }
     }
     

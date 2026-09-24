@@ -91,6 +91,9 @@ class UserAuthModel: ObservableObject {
         let fcmToken = UserDefaults.standard.string(forKey: "FCMToken") ?? ""
         
         let db = Firestore.firestore()
+        
+        //Date for notifications and create in UserDefaults
+        UserDefaults.standard.set(Date(), forKey: "creation_date")
 
         //add user in table "users"
         do {

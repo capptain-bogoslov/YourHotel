@@ -142,7 +142,7 @@ class ServicesViewModel: ObservableObject {
         
         do {
             try await db.collection("spa_bookings").addDocument(data: newBookingData)
-            showAlertMessage(message: "Booking requested! Status: Unconfirmed")
+            showAlertMessage(message: "Your request is send! Please contact the reception for confirmation.")
             selectedTimeSlot = nil
         } catch {
             showAlertMessage(message: "Error saving booking: \(error.localizedDescription)")

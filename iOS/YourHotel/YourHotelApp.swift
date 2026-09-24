@@ -53,11 +53,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct YourHotelApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var userAuth: UserAuthModel = UserAuthModel()
+    @StateObject var notificationsManager: NotificationsManager = NotificationsManager()
 
     var body: some Scene {
         WindowGroup {
             SplashScreen()
                 .environmentObject(userAuth)
+                .environmentObject(notificationsManager)
 
         }
     }
